@@ -1,0 +1,9 @@
+{
+  "name": "wavenet_vocoder",
+  "sample_rate": 22050,
+  "fft_size": 1280,
+  "hop_size": 320,
+  "num_mels": 80
+}
+
+

@@ -1,0 +1,166 @@
+12:10
+    使用设备: cuda
+    训练轮次：100
+    TensorBoard日志保存至: runs/Octave_1_3/exp_nc800_batchsize32_lr0.0001_wd1e-0520251210_190510
+    加载数据集...
+    列名: ['WAV文件路径', 'WAV文件名', 'Mode', 'Type', 'Qv 体积流量\n(m3/h)', 'DP\nHVAC inlet\n(Pa)', 'N 鼓风机转速\n(rpm)', 'Diameter', '流速v1', '流速v2', '流速v3', 'Lp M1 麦克风总计值\n (dBA)', '1-3 octave band SPL', 'Magnitudes', 'Bark Band Loudness', 'Loudness', 'Sharpness', 'Roughness', 'Fluctuation']
+    输出列列表的长度: 25
+    模式类型编码: {'CVAF': 0, 'CVAR': 1, 'HDF': 2, 'HFF': 3}
+    成功加载 1594 条数据记录
+    数据集划分完成 - 训练集: 1276 样本, 验证集: 318 样本
+    输入特征归一化参数计算完成
+    输入特征均值: [3.26090648e+02 3.76932529e+02 2.16023633e+03 1.50095650e+02
+    1.24843921e+00 4.53548334e+00 5.10555170e+00]
+    输入特征标准差: [1.45413009e+02 2.99296975e+02 9.62817659e+02 5.71265118e+00
+    6.53555609e-01 2.58195223e+00 2.93807514e+00]
+    列名: ['WAV文件路径', 'WAV文件名', 'Mode', 'Type', 'Qv 体积流量\n(m3/h)', 'DP\nHVAC inlet\n(Pa)', 'N 鼓风机转速\n(rpm)', 'Diameter', '流速v1', '流速v2', '流速v3', 'Lp M1 麦克风总计值\n (dBA)', '1-3 octave band SPL', 'Magnitudes', 'Bark Band Loudness', 'Loudness', 'Sharpness', 'Roughness', 'Fluctuation']
+    输出列列表的长度: 25
+    模式类型编码: {'CVAF': 0, 'CVAR': 1, 'HDF': 2, 'HFF': 3}
+    成功加载 1594 条数据记录
+    result：Val Loss:   34.4963 (MSE: 17.4403, Cosine: 0.0018, LP Loss: 1.6966)
+
+12：15
+    使用设备: cuda
+    TensorBoard日志保存至: runs/Octave_1_3/exp_nc800_batchsize32_lr0.0001_wd1e-0520251215_151652
+    加载数据集...
+    列名: ['WAV文件路径', 'WAV文件名', 'Mode', 'Type', 'Qv 体积流量\n(m3/h)', 'DP\nHVAC inlet\n(Pa)', 'N 鼓风机转速\n(rpm)', 'Diameter', '流速v1', '流速v2', '流速v3', 'Lp M1 麦克风总计值\n (dBA)', '1-3 octave band SPL', 'Magnitudes', 'Bark Band Loudness', 'Loudness', 'Sharpness', 'Roughness', 'Fluctuation', 'source_file', 'predicted_value', 'absolute_deviation', 'relative_deviation', 'exceeds_threshold']
+    输出列列表的长度: 25
+    模式类型编码: {'CVAF': 0, 'CVAR': 1, 'HDF': 2, 'HFF': 3}
+    成功加载 1261 条数据记录
+    数据集划分完成 - 训练集: 1009 样本, 验证集: 252 样本
+    输入特征归一化参数计算完成
+    输入特征均值: [3.59266601e+02 4.36482782e+02 2.37718013e+03 1.50277354e+02  
+    1.38229926e+00 4.97446740e+00 5.52566640e+00]
+    输入特征标准差: [1.31040679e+02 2.91567035e+02 8.78624016e+02 5.70490808e+00
+    6.20736501e-01 2.48770349e+00 2.86952549e+00]
+    列名: ['WAV文件路径', 'WAV文件名', 'Mode', 'Type', 'Qv 体积流量\n(m3/h)', 'DP\nHVAC inlet\n(Pa)', 'N 鼓风机转速\n(rpm)', 'Diameter', '流速v1', '流速v2', '流速v3', 'Lp M1 麦克风总计值\n (dBA)', '1-3 octave band SPL', 'Magnitudes', 'Bark Band Loudness', 'Loudness', 'Sharpness', 'Roughness', 'Fluctuation', 'source_file', 'predicted_value', 'absolute_deviation', 'relative_deviation', 'exceeds_threshold']
+    输出列列表的长度: 25
+    模式类型编码: {'CVAF': 0, 'CVAR': 1, 'HDF': 2, 'HFF': 3}
+    成功加载 1261 条数据记录    
+    result：Val Loss:   34.4963 (MSE: 17.4403, Cosine: 0.0018, LP Loss: 1.6966)
+
+12:24
+    使用13台空调型号，筛选后
+    使用设备: cuda
+    TensorBoard日志保存至: runs/Octave_1_3/exp_nc800_epochs100_batchsize32_lr0.0001_wd1e-0520251224_201117
+    加载数据集...
+    列名: ['WAV文件路径', 'WAV文件名', 'Mode', 'Type', 'Qv 体积流量\n(m3/h)', 'DP\nHVAC inlet\n(Pa)', 'N 鼓风机转速\n(rpm)', 'Diameter', '流速v1', '流速v2', '流速v3', 'Lp M1 麦克风总计值\n (dBA)', '1-3 octave band SPL', 'Magnitudes', 'Loudness', 'Sharpness', 'Roughness', 'qingxidu', 'source_file', 'predicted_value', 'absolute_deviation', 'relative_deviation', 'exceeds_threshold']
+    输出列列表的长度: 28
+    模式类型编码: {'CVAF': 0, 'CVAR': 1, 'HDF': 2, 'HFF': 3}
+    成功加载 1079 条数据记录
+    数据集划分完成 - 训练集: 864 样本, 验证集: 215 样本
+    输入特征归一化参数计算完成
+    输入特征均值: [3.59215856e+02 4.41623582e+02 2.37242289e+03 1.50850810e+02
+    1.36090688e+00 4.89445919e+00 5.49029378e+00]
+    输入特征标准差: [1.32168900e+02 2.98119085e+02 8.92670530e+02 5.67213425e+00
+    6.07684671e-01 2.49425029e+00 2.85400517e+00]
+    列名: ['WAV文件路径', 'WAV文件名', 'Mode', 'Type', 'Qv 体积流量\n(m3/h)', 'DP\nHVAC inlet\n(Pa)', 'N 鼓风机转速\n(rpm)', 'Diameter', '流速v1', '流速v2', '流速v3', 'Lp M1 麦克风总计值\n (dBA)', '1-3 octave band SPL', 'Magnitudes', 'Loudness', 'Sharpness', 'Roughness', 'qingxidu', 'source_file', 'predicted_value', 'absolute_deviation', 'relative_deviation', 'exceeds_threshold']
+    输出列列表的长度: 28
+    模式类型编码: {'CVAF': 0, 'CVAR': 1, 'HDF': 2, 'HFF': 3}
+    成功加载 1079 条数据记录    
+    Val Loss:   21.2139 (MSE: 6.1522, Cosine: 0.0102, LP Loss: 1.4552)
+
+12.29    
+    使用13台空调型号，筛选后
+    使用设备: cuda
+    TensorBoard日志保存至: runs/Octave_1_3/exp_nc1600_epochs100_batchsize32_lr1e-05_wd1e-0520251229_100249
+    加载数据集...
+    列名: ['WAV文件路径', 'WAV文件名', 'Mode', 'Type', 'Qv 体积流量\n(m3/h)', 'DP\nHVAC inlet\n(Pa)', 'N 鼓风机转速\n(rpm)', 'Diameter', '流速v1', '流速v2', '流速v3', 'Lp M1 麦克风总计值\n (dBA)', '1-3 octave band SPL', 'Magnitudes', 'Loudness', 'Sharpness', 'Roughness', 'qingxidu', 'source_file', 'predicted_value', 'absolute_deviation', 'relative_deviation', 'exceeds_threshold']
+    输出列列表的长度: 28
+    模式类型编码: {'CVAF': 0, 'CVAR': 1, 'HDF': 2, 'HFF': 3}
+    成功加载 1079 条数据记录
+    数据集划分完成 - 训练集: 864 样本, 验证集: 215 样本
+    输入特征归一化参数计算完成
+    输入特征均值: [3.59215856e+02 4.41623582e+02 2.37242289e+03 1.50850810e+02  
+    1.36090688e+00 4.89445919e+00 5.49029378e+00]
+    输入特征标准差: [1.32168900e+02 2.98119085e+02 8.92670530e+02 5.67213425e+00
+    6.07684671e-01 2.49425029e+00 2.85400517e+00]
+    列名: ['WAV文件路径', 'WAV文件名', 'Mode', 'Type', 'Qv 体积流量\n(m3/h)', 'DP\nHVAC inlet\n(Pa)', 'N 鼓风机转速\n(rpm)', 'Diameter', '流速v1', '流速v2', '流速v3', 'Lp M1 麦克风总计值\n (dBA)', '1-3 octave band SPL', 'Magnitudes', 'Loudness', 'Sharpness', 'Roughness', 'qingxidu', 'source_file', 'predicted_value', 'absolute_deviation', 'relative_deviation', 'exceeds_threshold']
+    输出列列表的长度: 28
+    模式类型编码: {'CVAF': 0, 'CVAR': 1, 'HDF': 2, 'HFF': 3}
+    成功加载 1079 条数据记录
+    Val Loss:   41.7111 (MSE: 9.0189, Cosine: 0.0143, LP Loss: 3.1975)
+
+12.29
+    使用13台空调型号，筛选后
+    使用设备: cuda
+    TensorBoard日志保存至: runs/Octave_1_3/exp_nc1600_epochs200_batchsize32_lr1e-05_wd1e-0520251229_142404
+    加载数据集...
+    列名: ['WAV文件路径', 'WAV文件名', 'Mode', 'Type', 'Qv 体积流量\n(m3/h)', 'DP\nHVAC inlet\n(Pa)', 'N 鼓风机转速\n(rpm)', 'Diameter', '流速v1', '流速v2', '流速v3', 'Lp M1 麦克风总计值\n (dBA)', '1-3 octave band SPL', 'Magnitudes', 'Loudness', 'Sharpness', 'Roughness', 'qingxidu', 'source_file', 'predicted_value', 'absolute_deviation', 'relative_deviation', 'exceeds_threshold']
+    输出列列表的长度: 28
+    模式类型编码: {'CVAF': 0, 'CVAR': 1, 'HDF': 2, 'HFF': 3}
+    成功加载 1079 条数据记录
+    数据集划分完成 - 训练集: 864 样本, 验证集: 215 样本
+    输入特征归一化参数计算完成
+    输入特征均值: [3.59215856e+02 4.41623582e+02 2.37242289e+03 1.50850810e+02
+    1.36090688e+00 4.89445919e+00 5.49029378e+00]
+    输入特征标准差: [1.32168900e+02 2.98119085e+02 8.92670530e+02 5.67213425e+00
+    6.07684671e-01 2.49425029e+00 2.85400517e+00]
+    列名: ['WAV文件路径', 'WAV文件名', 'Mode', 'Type', 'Qv 体积流量\n(m3/h)', 'DP\nHVAC inlet\n(Pa)', 'N 鼓风机转速\n(rpm)', 'Diameter', '流速v1', '流速v2', '流速v3', 'Lp M1 麦克风总计值\n (dBA)', '1-3 octave band SPL', 'Magnitudes', 'Loudness', 'Sharpness', 'Roughness', 'qingxidu', 'source_file', 'predicted_value', 'absolute_deviation', 'relative_deviation', 'exceeds_threshold']
+    输出列列表的长度: 28
+    模式类型编码: {'CVAF': 0, 'CVAR': 1, 'HDF': 2, 'HFF': 3}
+    成功加载 1079 条数据记录
+    Val Loss:   29.5585 (MSE: 6.9164, Cosine: 0.0114, LP Loss: 2.2074)
+
+12.29
+    使用13台空调型号，筛选后
+    使用设备: cuda
+    TensorBoard日志保存至: runs/Octave_1_3/exp_nc800_epochs200_batchsize32_lr0.0001_wd1e-0520251229_194057
+    加载数据集...
+    列名: ['WAV文件路径', 'WAV文件名', 'Mode', 'Type', 'Qv 体积流量\n(m3/h)', 'DP\nHVAC inlet\n(Pa)', 'N 鼓风机转速\n(rpm)', 'Diameter', '流速v1', '流速v2', '流速v3', 'Lp M1 麦克风总计值\n (dBA)', '1-3 octave band SPL', 'Magnitudes', 'Loudness', 'Sharpness', 'Roughness', 'qingxidu', 'source_file', 'predicted_value', 'absolute_deviation', 'relative_deviation', 'exceeds_threshold']
+    输出列列表的长度: 28
+    模式类型编码: {'CVAF': 0, 'CVAR': 1, 'HDF': 2, 'HFF': 3}
+    成功加载 1079 条数据记录
+    数据集划分完成 - 训练集: 864 样本, 验证集: 215 样本
+    输入特征归一化参数计算完成
+    输入特征均值: [3.59215856e+02 4.41623582e+02 2.37242289e+03 1.50850810e+02
+    1.36090688e+00 4.89445919e+00 5.49029378e+00]
+    输入特征标准差: [1.32168900e+02 2.98119085e+02 8.92670530e+02 5.67213425e+00
+    6.07684671e-01 2.49425029e+00 2.85400517e+00]
+    列名: ['WAV文件路径', 'WAV文件名', 'Mode', 'Type', 'Qv 体积流量\n(m3/h)', 'DP\nHVAC inlet\n(Pa)', 'N 鼓风机转速\n(rpm)', 'Diameter', '流速v1', '流速v2', '流速v3', 'Lp M1 麦克风总计值\n (dBA)', '1-3 octave band SPL', 'Magnitudes', 'Loudness', 'Sharpness', 'Roughness', 'qingxidu', 'source_file', 'predicted_value', 'absolute_deviation', 'relative_deviation', 'exceeds_threshold']
+    输出列列表的长度: 28
+    模式类型编码: {'CVAF': 0, 'CVAR': 1, 'HDF': 2, 'HFF': 3}
+    成功加载 1079 条数据记录    
+    Val Loss:   16.9382 (MSE: 5.1938, Cosine: 0.0087, LP Loss: 1.1310)
+
+12.31
+    使用11台空调型号，筛选后
+    使用设备: cuda
+    TensorBoard日志保存至: runs/Octave_1_3/exp_nc800_epochs200_batchsize32_lr0.0001_wd1e-0520251231_163509
+    加载数据集...
+    列名: ['WAV文件路径', 'WAV文件名', 'Mode', 'Type', 'Qv 体积流量\n(m3/h)', 'DP\nHVAC inlet\n(Pa)', 'N 鼓风机转速\n(rpm)', 'Diameter', '流速v1', '流速v2', '流速v3', 'Lp M1 麦克风总计值\n (dBA)', '1-3 octave band SPL', 'Magnitudes', 'Loudness', 'Sharpness', 'Roughness', 'qingxidu', 'source_file', 'predicted_value', 'absolute_deviation', 'relative_deviation', 'exceeds_threshold']
+    输出列列表的长度: 28
+    模式类型编码: {'CVAF': 0, 'CVAR': 1, 'HDF': 2, 'HFF': 3}
+    成功加载 916 条数据记录
+    数据集划分完成 - 训练集: 733 样本, 验证集: 183 样本
+    输入特征归一化参数计算完成
+    输入特征均值: [3.53905184e+02 4.28119834e+02 2.34347578e+03 1.51266303e+02
+    1.35258863e+00 4.67147263e+00 5.32366458e+00]
+    输入特征标准差: [1.32717205e+02 2.91611774e+02 8.75513199e+02 5.96355549e+00
+    6.24913603e-01 2.32452202e+00 2.74706277e+00]
+    列名: ['WAV文件路径', 'WAV文件名', 'Mode', 'Type', 'Qv 体积流量\n(m3/h)', 'DP\nHVAC inlet\n(Pa)', 'N 鼓风机转速\n(rpm)', 'Diameter', '流速v1', '流速v2', '流速v3', 'Lp M1 麦克风总计值\n (dBA)', '1-3 octave band SPL', 'Magnitudes', 'Loudness', 'Sharpness', 'Roughness', 'qingxidu', 'source_file', 'predicted_value', 'absolute_deviation', 'relative_deviation', 'exceeds_threshold']
+    输出列列表的长度: 28
+    模式类型编码: {'CVAF': 0, 'CVAR': 1, 'HDF': 2, 'HFF': 3}
+    成功加载 916 条数据记录    
+    Val Loss:   19.1239 (MSE: 5.4047, Cosine: 0.0100, LP Loss: 1.3218)
+
+1.05
+    使用13台空调型号，筛选前
+    使用设备: cuda
+    TensorBoard日志保存至: runs/Octave_1_3/exp_nc800_epochs200_batchsize32_lr0.0001_wd1e-0520260105_153250
+    加载数据集...
+    列名: ['WAV文件路径', 'WAV文件名', 'Mode', 'Type', 'Qv 体积流量\n(m3/h)', 'DP\nHVAC inlet\n(Pa)', 'N 鼓风机转速\n(rpm)', 'Diameter', '流速v1', '流速v2', '流速v3', 'Lp M1 麦克风总计值\n (dBA)', '1-3 octave band SPL', 'Magnitudes', 'Loudness', 'Sharpness', 'Roughness', 'qingxidu']
+    输出列列表的长度: 28
+    模式类型编码: {'CVAF': 0, 'CVAR': 1, 'HDF': 2, 'HFF': 3}
+    成功加载 1350 条数据记录
+    数据集划分完成 - 训练集: 1080 样本, 验证集: 270 样本
+    输入特征归一化参数计算完成
+    输入特征均值: [3.29409722e+02 3.86655217e+02 2.17354014e+03 1.50459676e+02
+    1.25727139e+00 4.47548656e+00 5.06532584e+00]
+    输入特征标准差: [1.44885219e+02 3.07371376e+02 9.74515916e+02 5.69471176e+00
+    6.41488907e-01 2.54989126e+00 2.97019718e+00]
+    列名: ['WAV文件路径', 'WAV文件名', 'Mode', 'Type', 'Qv 体积流量\n(m3/h)', 'DP\nHVAC inlet\n(Pa)', 'N 鼓风机转速\n(rpm)', 'Diameter', '流速v1', '流速v2', '流速v3', 'Lp M1 麦克风总计值\n (dBA)', '1-3 octave band SPL', 'Magnitudes', 'Loudness', 'Sharpness', 'Roughness', 'qingxidu']
+    输出列列表的长度: 28
+    模式类型编码: {'CVAF': 0, 'CVAR': 1, 'HDF': 2, 'HFF': 3}
+    成功加载 1350 条数据记录    
+    Val Loss:   25.3763 (MSE: 5.9671, Cosine: 0.0140, LP Loss: 1.8710)

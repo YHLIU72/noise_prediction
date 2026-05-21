@@ -1,0 +1,16 @@
+{
+  "name": "wavenet_vocoder",
+  "sample_rate": 65536,
+  "fft_size": 1280,
+  "hop_size": 320,
+  "num_mels": 80,
+  "fmin": 20,
+  "fmax": 32768,
+  "cin_channels": 80,
+  "n_speakers": -1,
+  "upsample_conditional_features": true,
+  "upsample_net": "ConvInUpsampleNetwork",
+  "upsample_params": { "upsample_scales": [4, 4, 4, 5] },
+  "num_workers": 0
+}
+

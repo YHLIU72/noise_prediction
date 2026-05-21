@@ -1,0 +1,95 @@
+# ===== 数据文件 =====
+*.csv
+*.xlsx
+*.xlsm
+
+# ===== 模型文件 =====
+*.pth
+*.ckpt
+*.pt
+
+# ===== 音频文件 =====
+*.wav
+*.mp3
+*.flac
+*.ogg
+
+# ===== Numpy 数组 =====
+*.npy
+*.npz
+
+# ===== 图片/图表结果 =====
+*.png
+*.jpg
+*.jpeg
+*.pdf
+
+# ===== Python 缓存 =====
+__pycache__/
+*.pyc
+*.pyo
+.cache/
+
+# ===== 数据目录 =====
+csvdata/
+csvdata111/
+csvdata222/
+csvdata333/
+csvdata444/
+csvdata444_yuanshi/
+data/
+data1219/
+data_init/
+dump/
+dump_T2X_RHD_65k/
+runs/
+result1/
+comparison_results/
+mel_comparison/
+
+# ===== Wavenet 运行时产物 =====
+wavenet_vocoder/checkpoints/
+wavenet_vocoder/log/
+wavenet_vocoder/datasets/
+wavenet_vocoder/egs/
+
+# ===== Papernoise 运行时产物 =====
+papernoise/comparison_results/
+papernoise/runs/
+papernoise/line_infer_copy_results/
+papernoise/1_3_octave_infer_copy_results/
+
+# ===== 车辆数据目录（仅含 wav 文件）=====
+AD02/
+BYD HTH/
+E0Y 3Z3M/
+GEM/
+H37/
+H97D/
+KKL/
+M1E/
+MBQ/
+MEB/
+MRA2 2Z/
+MRA2 EVA2/
+NU2/
+SA5H/
+SRH/
+T1X/
+T2X RHD/
+X03/
+
+# ===== 其他临时文件 =====
+*.egg-info/
+*.egg
+.eggs/
+dist/
+build/
+
+# ===== IDE =====
+.vscode/
+.idea/
+
+# ===== 系统文件 =====
+.DS_Store
+Thumbs.db

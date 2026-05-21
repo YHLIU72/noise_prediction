@@ -1,0 +1,15 @@
+12:10
+    TensorBoard日志保存至: runs/line/exp_nc16000_epochs100_batchsize32_lr0.0001_wd1e-0520251210_192045
+    加载数据集...
+    列名: ['WAV文件路径', 'WAV文件名', 'Mode', 'Type', 'Qv 体积流量\n(m3/h)', 'DP\nHVAC inlet\n(Pa)', 'N 鼓风机转速\n(rpm)', 'Diameter', '流速v1', '流速v2', '流速v3', 'Lp M1 麦克风总计值\n (dBA)', '1-3 octave band SPL', 'Magnitudes', 'Bark Band Loudness', 'Loudness', 'Sharpness', 'Roughness', 'Fluctuation']
+    输出列列表的长度: 5001
+    成功加载 1594 条数据记录
+    数据集划分完成 - 训练集: 1276 样本, 验证集: 318 样本
+    输入特征归一化参数计算完成
+    输入特征均值: [3.26090648e+02 3.76932529e+02 2.16023633e+03 1.50095650e+02
+    1.24843921e+00 4.53548334e+00 5.10555170e+00]
+    输入特征标准差: [1.45413009e+02 2.99296975e+02 9.62817659e+02 5.71265118e+00
+    6.53555609e-01 2.58195223e+00 2.93807514e+00]
+    列名: ['WAV文件路径', 'WAV文件名', 'Mode', 'Type', 'Qv 体积流量\n(m3/h)', 'DP\nHVAC inlet\n(Pa)', 'N 鼓风机转速\n(rpm)', 'Diameter', '流速v1', '流速v2', '流速v3', 'Lp M1 麦克风总计值\n (dBA)', '1-3 octave band SPL', 'Magnitudes', 'Bark Band Loudness', 'Loudness', 'Sharpness', 'Roughness', 'Fluctuation']
+    输出列列表的长度: 5001
+    成功加载 1594 条数据记录

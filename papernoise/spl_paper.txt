@@ -1,0 +1,64 @@
+2.02
+筛选后数据，13台空调
+使用设备: cuda
+TensorBoard日志保存至: runs/spl/exp_nc800_epochs100_batchsize32_lr0.0001_wd1e-0520260201_203236
+加载数据集...
+列名: ['WAV文件路径', 'WAV文件名', 'Mode', 'Type', 'Qv 体积流量\n(m3/h)', 'DP\nHVAC inlet\n(Pa)', 'N 鼓风机转速\n(rpm)', 'Diameter', '流速v1', '流速v2', '流速v3', 'Lp M1 麦克风总计值\n (dBA)', '1-3 octave band SPL', 'Magnitudes', 'Loudness', 'Sharpness', 'Roughness', 'qingxidu', 'source_file', 'predicted_value', 'absolute_deviation', 'relative_deviation', 'exceeds_threshold']
+空调型号编码: {'AD02': 0, 'BYD HTH': 1, 'E0Y 3Z3M': 2, 'KKL': 3, 'M1E': 4, 'MBQ': 5, 'MEB': 6, 'MRA2 2Z': 7, 'MRA2 EVA2': 8, 'NU2': 9, 'SRH': 10, 'T2X RHD': 11, 'X03': 12}
+模式类型编码: {'CVAF': 0, 'CVAR': 1, 'HDF': 2, 'HFF': 3}
+成功加载 1079 条数据记录
+数据集划分完成 - 训练集: 864 样本, 验证集: 215 样本
+输入特征归一化参数计算完成
+输入特征均值: [ 359.21585648  441.62358173 2372.42288773]
+输入特征标准差: [132.16890018 298.11908531 892.67053018]
+列名: ['WAV文件路径', 'WAV文件名', 'Mode', 'Type', 'Qv 体积流量\n(m3/h)', 'DP\nHVAC inlet\n(Pa)', 'N 鼓风机转速\n(rpm)', 'Diameter', '流速v1', '流速v2', '流速v3', 'Lp M1 麦克风总计值\n (dBA)', '1-3 octave band SPL', 'Magnitudes', 'Loudness', 'Sharpness', 'Roughness', 'qingxidu', 'source_file', 'predicted_value', 'absolute_deviation', 'relative_deviation', 'exceeds_threshold']
+空调型号编码: {'AD02': 0, 'BYD HTH': 1, 'E0Y 3Z3M': 2, 'KKL': 3, 'M1E': 4, 'MBQ': 5, 'MEB': 6, 'MRA2 2Z': 7, 'MRA2 EVA2': 8, 'NU2': 9, 'SRH': 10, 'T2X RHD': 11, 'X03': 12}
+模式类型编码: {'CVAF': 0, 'CVAR': 1, 'HDF': 2, 'HFF': 3}
+成功加载 1079 条数据记录
+Train Loss: 11.57853586
+Val Loss:   1.31615838
+最佳模型保存至: runs/spl/exp_nc800_epochs100_batchsize32_lr0.0001_wd1e-0520260201_203236/checkpoint\best_model_epoch_95.pth
+
+筛选前13台
+使用设备: cuda
+TensorBoard日志保存至: runs/spl/exp_nc800_epochs100_batchsize32_lr0.0001_wd1e-0520260202_160856
+加载数据集...
+列名: ['WAV文件路径', 'WAV文件名', 'Mode', 'Type', 'Qv 体积流量\n(m3/h)', 'DP\nHVAC inlet\n(Pa)', 'N 鼓风机转速\n(rpm)', 'Diameter', '流速v1', '流速v2', '流速v3', 'Lp M1 麦克风总计值\n (dBA)', '1-3 
+octave band SPL', 'Magnitudes', 'Loudness', 'Sharpness', 'Roughness', 'qingxidu']
+空调型号编码: {'AD02': 0, 'BYD HTH': 1, 'E0Y 3Z3M': 2, 'KKL': 3, 'M1E': 4, 'MBQ': 5, 'MEB': 6, 'MRA2 2Z': 7, 'MRA2 EVA2': 8, 'NU2': 9, 'SRH': 10, 'T2X RHD': 11, 'X03': 12}
+模式类型编码: {'CVAF': 0, 'CVAR': 1, 'HDF': 2, 'HFF': 3}
+成功加载 1350 条数据记录
+数据集划分完成 - 训练集: 1080 样本, 验证集: 270 样本
+输入特征归一化参数计算完成
+输入特征均值: [ 329.40972222  386.65521714 2173.54013889]
+输入特征标准差: [144.88521852 307.37137597 974.51591638]
+列名: ['WAV文件路径', 'WAV文件名', 'Mode', 'Type', 'Qv 体积流量\n(m3/h)', 'DP\nHVAC inlet\n(Pa)', 'N 鼓风机转速\n(rpm)', 'Diameter', '流速v1', '流速v2', '流速v3', 'Lp M1 麦克风总计值\n (dBA)', '1-3 
+octave band SPL', 'Magnitudes', 'Loudness', 'Sharpness', 'Roughness', 'qingxidu']
+空调型号编码: {'AD02': 0, 'BYD HTH': 1, 'E0Y 3Z3M': 2, 'KKL': 3, 'M1E': 4, 'MBQ': 5, 'MEB': 6, 'MRA2 2Z': 7, 'MRA2 EVA2': 8, 'NU2': 9, 'SRH': 10, 'T2X RHD': 11, 'X03': 12}
+模式类型编码: {'CVAF': 0, 'CVAR': 1, 'HDF': 2, 'HFF': 3}
+成功加载 1350 条数据记录
+Train Loss: 9.93795124
+Val Loss:   2.13143948
+最佳模型保存至: runs/spl/exp_nc800_epochs100_batchsize32_lr0.0001_wd1e-0520260202_160856/checkpoint\best_model_epoch_89.pth
+
+经典方法
+使用设备: cuda
+TensorBoard日志保存至: runs/spl/exp_nc800_epochs100_batchsize32_lr0.0001_wd1e-0520260203_150442
+加载数据集...
+列名: ['WAV文件路径', 'WAV文件名', 'Mode', 'Type', 'Qv 体积流量\n(m3/h)', 'DP\nHVAC inlet\n(Pa)', 'N 鼓风机转速\n(rpm)', 'Diameter', '流速v1', '流速v2', '流速v3', 'Lp M1 麦克风总计值\n (dBA)', '1-3 
+octave band SPL', 'Magnitudes', 'Loudness', 'Sharpness', 'Roughness', 'qingxidu', 'source_file', 'predicted_value', 'absolute_deviation', 'relative_deviation', 'exceeds_threshold']
+空调型号编码: {'AD02': 0, 'BYD HTH': 1, 'E0Y 3Z3M': 2, 'KKL': 3, 'M1E': 4, 'MBQ': 5, 'MEB': 6, 'MRA2 2Z': 7, 'MRA2 EVA2': 8, 'NU2': 9, 'SRH': 10, 'T2X RHD': 11, 'X03': 12}
+模式类型编码: {'CVAF': 0, 'CVAR': 1, 'HDF': 2, 'HFF': 3}
+成功加载 1079 条数据记录
+数据集划分完成 - 训练集: 864 样本, 验证集: 215 样本
+输入特征归一化参数计算完成
+输入特征均值: [ 359.21585648  441.62358173 2372.42288773]
+输入特征标准差: [132.16890018 298.11908531 892.67053018]
+列名: ['WAV文件路径', 'WAV文件名', 'Mode', 'Type', 'Qv 体积流量\n(m3/h)', 'DP\nHVAC inlet\n(Pa)', 'N 鼓风机转速\n(rpm)', 'Diameter', '流速v1', '流速v2', '流速v3', 'Lp M1 麦克风总计值\n (dBA)', '1-3 
+octave band SPL', 'Magnitudes', 'Loudness', 'Sharpness', 'Roughness', 'qingxidu', 'source_file', 'predicted_value', 'absolute_deviation', 'relative_deviation', 'exceeds_threshold']
+空调型号编码: {'AD02': 0, 'BYD HTH': 1, 'E0Y 3Z3M': 2, 'KKL': 3, 'M1E': 4, 'MBQ': 5, 'MEB': 6, 'MRA2 2Z': 7, 'MRA2 EVA2': 8, 'NU2': 9, 'SRH': 10, 'T2X RHD': 11, 'X03': 12}
+模式类型编码: {'CVAF': 0, 'CVAR': 1, 'HDF': 2, 'HFF': 3}
+成功加载 1079 条数据记录
+Train Loss: 18.52591253
+Val Loss:   6.00893100
+最佳模型保存至: runs/spl/exp_nc800_epochs100_batchsize32_lr0.0001_wd1e-0520260203_150442/checkpoint\best_model_epoch_100.pth
