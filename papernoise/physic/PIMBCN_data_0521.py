@@ -74,10 +74,12 @@ class PIMBCNDataset(Dataset):
         self.column_names = self.data.columns.tolist()
         self._validate_columns()
 
-        self.data.iloc[:, self.type_col] = self.type_encoder.fit_transform(
-            self.data.iloc[:, self.type_col])
-        self.data.iloc[:, self.mode_col] = self.mode_encoder.fit_transform(
-            self.data.iloc[:, self.mode_col])
+        type_col_name = self.data.columns[self.type_col]
+        mode_col_name = self.data.columns[self.mode_col]
+        self.data[type_col_name] = self.type_encoder.fit_transform(
+            self.data[type_col_name])
+        self.data[mode_col_name] = self.mode_encoder.fit_transform(
+            self.data[mode_col_name])
         print(f"成功加载 {len(self.data)} 条数据记录")
 
     # ================= 核心优化：预解析所有列到 numpy =================

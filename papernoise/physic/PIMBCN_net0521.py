@@ -54,6 +54,8 @@ class TransposeConvBlock(nn.Module):
     def forward(self, x):
         residual = self.residual_proj(x)
         x = F.gelu(self.bn(self.conv(x)))
+        if residual.shape[-1] != x.shape[-1]:
+            residual = F.interpolate(residual, size=x.shape[-1], mode='linear', align_corners=False)
         return x + residual
 
 
@@ -166,7 +168,7 @@ class PI_MBCN(nn.Module):
         batch_size = x.size(0)
         spectrum_out = torch.zeros(
             batch_size, self.heads["mode_0_type_0"].freq_bins,
-            device=x.device, dtype=x.dtype
+            device=x.device, dtype=shared_features.dtype
         )
 
         combo_idx = mode_idx * self.num_types + type_idx
@@ -179,7 +181,7 @@ class PI_MBCN(nn.Module):
 
             mask = (combo_idx == combo)
             branch_features = shared_features[mask]
-            spectrum_out[mask] = self.heads[branch_key](branch_features)
+            spectrum_out[mask] = self.heads[branch_key](branch_features).to(spectrum_out.dtype)
 
         return spectrum_out
 

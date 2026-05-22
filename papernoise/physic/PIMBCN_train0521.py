@@ -65,7 +65,7 @@ def train_model(resume_path=None):
         print(f"从头训练，时间戳: {timestamp}")
 
     # ================= 数据加载（优化版） =================
-    data_directory = "E:\\lyh\\paddlespeech\\csvdata333"
+    data_directory = "F:\\lyh\\paddlespeech\\csvdata333"
 
     train_dataset = PIMBCNDataset(
         directory_path=data_directory,
@@ -124,7 +124,9 @@ def train_model(resume_path=None):
         print("已加载模型、损失模块、优化器、调度器、AMP 状态")
 
     # ================= torch.compile =================
-    # 注意: compile 放在加载权重之后，避免 compile 后的 state_dict 键名不匹配
+    # 2026-05-21: compile 暂禁用，PIMBCN_net0521 的 TransposeConvBlock 残差连接
+    # 在 compile trace 阶段存在维度广播不匹配 (16 vs 32)，等待模型修复后重新启用
+    compile_enabled = False
     if compile_enabled:
         print("启用 torch.compile() 加速...")
         model = torch.compile(model)
