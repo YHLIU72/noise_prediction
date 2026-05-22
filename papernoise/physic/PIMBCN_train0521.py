@@ -29,7 +29,7 @@ def train_model(resume_path=None):
 
     # ================= 训练超参数 =================
     batch_size = 16
-    epochs = 7500
+    epochs = 10000
 
     head_learning_rate = 5e-4
     shared_learning_rate = 5e-4
