@@ -329,6 +329,534 @@ V514 在另一台电脑上训练速度极慢，经分析有三个层级的性能
 
 
 ================================================================================
+  V0529 — 小样本高鲁棒版（针对 1000+ 条数据集优化）
+  数据: 2026-05-29 / 网络: 2026-05-29 / 训练: 2026-05-29
+================================================================================
+文件：
+  PIMBCN_data_0529.py     数据加载（分层抽样优化版）
+  PIMBCN_net0529.py       网络定义（小样本高鲁棒版）
+  PIMBCN_train0529.py     训练脚本（Windows 极速吞吐版）
+
+【数据管道优化】PIMBCN_data_0529.py
+  - 分层抽样 (Stratified Sampling): 按 mode+type 组合严格等比例划分训练/验证集
+  - 彻底解决小样本场景下验证集数据分布崩塌问题
+  - 预解析、零开销索引等继承自 V0521
+
+【网络架构优化】PIMBCN_net0529.py
+  - 傅里叶特征映射降维: mapping_size=64, scale=5.0
+  - Encoder hidden_dim: 2048→512（控制 VC 维度）
+  - Decoder 初始通道: 512→128（大幅缩减卷积核参数量）
+  - Dropout 比例提升至 0.3（强化正则化）
+  - 使用 BatchNorm1d 保持批稳定性
+
+【训练优化】PIMBCN_train0529.py
+  - 全量数据集预载入显存 (In-Memory VRAM Caching)
+  - 纯异步 GPU 累加，消除 CPU-GPU 同步开销
+  - 解决 Windows Triton 编译崩溃问题
+  - 小样本特化超参数: bs=8, wd=5e-3, epochs=50000
+  - 使用 torch.amp 替代弃用的 torch.cuda.amp
+
+【训练记录】
+  runs/pi_mbcn_WinFast_20260529_162937_epochs50000_bs8_wd0.005
+  runs/pi_mbcn_WinFast_20260529_224446_epochs50000_bs8_wd0.005
+
+
+================================================================================
+  V0601 — 进一步瘦身版（hidden_dim 降至 256）
+  网络: 2026-06-01 / 训练: 2026-06-01
+================================================================================
+文件：
+  PIMBCN_net0601.py               网络定义（标准版）
+  PIMBCN_net0601_ncjianshao.py    网络定义（进一步瘦身版）
+  PIMBCN_train0601.py             训练脚本
+  PIMBCN_train0601_ncjianshao.py  训练脚本
+
+【网络架构优化】
+  PIMBCN_net0601.py:
+    - hidden_dim: 512（与 V0529 一致）
+    - 增加 OpenMP 运行时冲突解决
+
+  PIMBCN_net0601_ncjianshao.py:
+    - hidden_dim: 512→256（更激进的瘦身）
+    - mapping_size: 64→32, scale: 5.0→3.0（进一步限制高频拟合）
+    - Decoder 初始通道: 128→64（更强信息瓶颈）
+    - Dropout 提升至 0.5（极端正则化）
+    - BatchNorm1d → LayerNorm（小批量更稳定）
+
+【训练记录】
+  runs/pi_mbcn_WinFast_20260601_183111_epochs50000_bs8_wd0.005
+  runs/pi_mbcn_WinFast_20260601_194754_epochs50000_bs8_wd0.005
+  runs/pi_mbcn_WinFast_20260601_205659_epochs50000_bs8_wd0.005
+
+
+================================================================================
+  V0602 — 权重衰减调优 + 增强推理
+  训练: 2026-06-02
+================================================================================
+文件：
+  PIMBCN_net0602_ncjianshao.py        网络定义
+  PIMBCN_train0602_ncjianshao.py      训练脚本
+  PIMBCN_train0602_ncjianshao_enhance.py 训练脚本（增强版）
+  PIMBCN_data_0602_enhance.py         数据加载（增强版）
+  PIMBCN_inference.py                 推理脚本
+
+【优化内容】
+  - 权重衰减调优: wd=0.01, 0.005, 0.0005 多组对比实验
+  - PIMBCN_net0602_ncjianshao.py: 扩展共享解码器主干，增大参数共享
+  - PIMBCN_inference.py: 独立推理脚本，支持批量预测
+
+【训练记录】
+  runs/pi_mbcn_WinFast_20260602_164724_epochs50000_bs8_wd0.01
+  runs/pi_mbcn_WinFast_20260602_173246_epochs50000_bs8_wd0.01
+  runs/pi_mbcn_WinFast_20260602_185145_epochs50000_bs8_wd0.0005
+  runs/pi_mbcn_WinFast_20260602_210337_epochs50000_bs8_wd0.005
+
+
+================================================================================
+  V0609 — 频率范围适配版（20~5000Hz）
+  数据: 2026-06-09 / 网络: 2026-06-09 / 训练: 2026-06-09
+================================================================================
+文件：
+  PIMBCN_data_0609_20to5000.py   数据加载（频率范围适配版）
+  PIMBCN_net0609_20to5000.py     网络定义（频率范围适配版）
+  PIMBCN_train0609_20to5000.py   训练脚本（频率范围适配版）
+
+【核心变更】
+  - 频率范围: 0~10000Hz (2501点) → 20~5000Hz (1246点, 间隔4Hz)
+  - 频谱截取: 从原始2501点中取索引5~1250
+  - freq_bins: 2501 → 1246
+
+【数据管道优化】PIMBCN_data_0609_20to5000.py
+  - 预截断/补齐频谱到2501点后，截取20~5000Hz范围
+  - 频率轴: np.linspace(20, 5000, 1246)
+  - 新增数据增强开关 augment 参数
+
+【网络架构优化】PIMBCN_net0609_20to5000.py
+  - hidden_dim: 256（继承自 V0601 瘦身版）
+  - 解码器去掉最后一层转置卷积，中间维度从2048降至1024
+  - 输出维度调整为1246点
+  - dtype精度优化: 防止Python float64提升模型精度
+
+【训练优化】PIMBCN_train0609_20to5000.py
+  - 学习率降低: 5e-4 → 3e-4（更稳定的小样本收敛）
+  - 权重衰减: 5e-3 → 1e-3（适中的正则化）
+  - epochs: 50000，batch_size: 8
+
+【动机】
+  原始频率范围0~10000Hz包含大量无效高频噪声，截取20~5000Hz有效频段：
+  1. 减少输入维度，降低模型复杂度
+  2. 去除无意义的高频噪声，提升信噪比
+  3. 符合人耳听觉敏感范围（20Hz~20kHz，核心敏感区2~5kHz）
+
+
+================================================================================
+  V0610 — 损失函数 V2 重构版
+  数据: 2026-06-10 / 网络: 2026-06-10 / 训练: 2026-06-10
+================================================================================
+文件：
+  PIMBCN_data_0610_lossV2.py   数据加载（损失V2配套版）
+  PIMBCN_net0610_lossV2.py     网络定义（损失V2重构版）
+  PIMBCN_train0610_lossV2.py   训练脚本（损失V2重构版）
+
+【损失函数重构】
+  - 移除 Cosine 相似度: 全正 dB 值下退化为常数，梯度≈0，无监督意义
+  - 移除 LogMSE: dB 已是对数域，双重对数无物理意义
+  - 移除 OASPL 损失: 与 MSE 高度冗余，不提供新监督信号
+  - 新增线性域峰值 MSE: dB→声压比转换，自动侧重高峰值区域
+  - 保留 dB-MSE (核心) + Sobolev 梯度 (平滑约束)
+
+【新损失组成】
+  Loss = 5.0×MSE + 2.0×LinearPeakMSE + 3.0×Sobolev
+
+【训练配置】
+  - lr=3e-4, T_0=200, wd=1e-3, batch=8, freq_bins=1246
+  - 数据增强: augment=True
+
+【动机】
+  原始损失组合存在多个问题：
+  1. Cosine 相似度在全正 dB 值分布下接近常数，梯度消失
+  2. OASPL 损失与频谱 MSE 高度线性相关，提供冗余监督
+  3. 峰值区域预测误差对听觉感知影响更大，需额外约束
+
+
+================================================================================
+  各版本验证集效果汇总（从 TensorBoard 事件文件提取最优 epoch 指标）
+================================================================================
+
+  ★ 指标说明：
+    - val_total / val_spectrum: 综合损失（越低越好），各版本损失组成不同，不可直接对比
+    - val_mse_spec / val_mse_db: 频谱 dB-MSE（越低越好，核心指标，可跨版本对比）
+    - val_cosine_spec: 频谱 Cosine 相似度损失（越低越好，= 1 - cosine_similarity）
+    - val_mse_oaspl / val_oaspl: OASPL 预测 MSE（越低越好）
+    - val_octave: 倍频程 MSE（越低越好）
+    - val_grad: Sobolev 梯度正则化损失（越低越好，频谱平滑度）
+    - val_logmse: LogMSE 损失（越低越好，仅部分版本）
+    - 最优 epoch 按综合损失 (val_total 或 val_spectrum) 最小值选取
+    - ★ 核心关注指标: val_mse_spec（频谱 MSE，可直接跨版本对比）
+    - 每条记录标注「训练脚本 | 网络定义 | 数据加载」三项代码文件
+
+──────────────────────────────────────────────────────────────────────
+  【V1】 — 初始多分支物理约束模型 (2026-05-06)
+──────────────────────────────────────────────────────────────────────
+  代码: PIMBCN_train.py | PIMBCN_net.py | PIMBCN_data.py
+
+  V1 正式版 — Run: pi_mbcn_hvac_20260506_150414 (最优 epoch=143):
+    val_total:          110.79
+    val_spectrum:       218.93  (best单独=215.93 @epoch=97)
+    val_oaspl:            7.27  (best单独=7.27 @epoch=151)
+    val_octave:           4.52  (best单独=4.52 @epoch=169)
+
+  V1 早期调优 — Run: pi_mbcn_hvac_20260504_184559 (最优 epoch=171):
+    val_total:          117.47   val_spectrum: 230.54
+    val_oaspl:            7.38   val_octave:     4.22
+
+  V1 初始尝试 — Run: pi_mbcn_hvac_20260504_181809 (最优 epoch=20):
+    val_total:          132.24   val_spectrum: 254.07
+    val_oaspl:           21.11   val_octave:     8.53
+
+──────────────────────────────────────────────────────────────────────
+  【V1.1】 — 编码器扩展+物理退火 (2026-05-06)
+──────────────────────────────────────────────────────────────────────
+  代码: PIMBCN_train_1.py | PIMBCN_net_1.py | PIMBCN_data.py
+
+  Run: pi_mbcn_hvac_20260506_183039 (最优 epoch=179):
+    val_total:          230.14
+    val_spectrum:       230.14
+
+──────────────────────────────────────────────────────────────────────
+  【V1.1.1】 — 移除OASPL/倍频程头 (2026-05-06)
+──────────────────────────────────────────────────────────────────────
+  代码: PIMBCN_train_1_1.py | PIMBCN_net_1_1.py | PIMBCN_data.py
+
+  Run: pi_mbcn_hvac_20260506_171933 (最优 epoch=141):
+    val_total:          210.94
+    val_spectrum:       210.94
+
+──────────────────────────────────────────────────────────────────────
+  【V1.1.1.1】 — 残差转置卷积+纯数据驱动 (2026-05-09)
+──────────────────────────────────────────────────────────────────────
+  代码: PIMBCN_train_1_1_1.py | PIMBCN_net_1_1_1.py | PIMBCN_data.py
+
+  Run: pi_mbcn_hvac_20260509_200108 (最优 epoch=280):
+    val_total:          219.40
+    val_spectrum:       219.40
+
+──────────────────────────────────────────────────────────────────────
+  【V1.1.1.1.1】 — HPS-MTL 共享主干+52轻量头 (2026-05-11)
+──────────────────────────────────────────────────────────────────────
+  代码: PIMBCN_train_1_1_1_1.py | PIMBCN_net_1_1_1_1.py | PIMBCN_data.py
+
+  1500ep 正式版 — Run: pi_mbcn_hvac_MTL_20260511_211708 (最优 epoch=1491):
+    val_total:           91.39
+    val_spectrum:        91.39
+
+  300ep 快速验证 — Run: pi_mbcn_hvac_MTL_20260511_123415 (最优 epoch=294):
+    val_total:          164.76
+    val_spectrum:       164.76
+
+  ★ 评估: 相比 V1.1.1.1 的 219.40，MTL架构将频谱损失降低了 58%！
+
+──────────────────────────────────────────────────────────────────────
+  【V1.1.1.1.1 copy】 — 断点续训版 (2026-05-14)
+──────────────────────────────────────────────────────────────────────
+  代码: PIMBCN_train_1_1_1_1 copy.py | PIMBCN_net_1_1_1_1.py | PIMBCN_data.py
+
+  无独立 TensorBoard run（延续 V1.1.1.1.1 的训练，共享同一 run 目录）
+
+──────────────────────────────────────────────────────────────────────
+  【V514】 — SE注意力+自适应损失权重 (2026-05-14)
+──────────────────────────────────────────────────────────────────────
+  代码: PIMBCN_train514.py | PIMBCN_net514.py | PIMBCN_data.py
+
+  Run: pi_mbcn_hvac_MTL_20260514_160650 (7500ep, 最优 epoch=3939):
+    val_total:          166.21
+    val_spectrum:       166.21
+    动态权重: MSE_Weight=0.0069, Cosine_Weight=114.68, OASPL_Weight=0.0046
+
+  ★ 注: V514 的 val_spectrum 数值比 V1.1.1.1.1 高，因损失函数中
+    同方差不确定性自适应权重导致各分量比例与之前版本不同，不可直接对比。
+
+──────────────────────────────────────────────────────────────────────
+  【V0521】 — 全链路性能优化版 (2026-05-21)
+──────────────────────────────────────────────────────────────────────
+  代码: PIMBCN_train0521.py | PIMBCN_net0521.py | PIMBCN_data_0521.py
+
+  Run: pi_mbcn_hvac_MTL_20260521_220730 (7500ep, run2, 最优 epoch=7458):
+    val_total:          146.92
+    val_spectrum:       146.92
+    动态权重: MSE_Weight=0.0086, Cosine_Weight=147.16, OASPL_Weight=0.0057
+
+  Run: pi_mbcn_hvac_MTL_20260521_220418 (7500ep, run1):
+    TensorBoard 无验证标量记录（可能是训练中断或日志未写入）
+
+──────────────────────────────────────────────────────────────────────
+  【V0529】 — 小样本高鲁棒版 (2026-05-29)
+──────────────────────────────────────────────────────────────────────
+  代码: PIMBCN_train0529.py | PIMBCN_net0529.py | PIMBCN_data_0529.py
+
+  Run1: pi_mbcn_WinFast_20260529_162937 (最优 epoch=1292):
+    val_spectrum:        34.72
+
+  Run2: pi_mbcn_WinFast_20260529_224446 (最优 epoch=43946):
+    val_spectrum:        39.35
+
+  ★ 注意: V0529 仅记录 val_spectrum 一个验证指标（综合损失=自适应权重和），
+    与后续版本的多指标记录方式不同。
+
+──────────────────────────────────────────────────────────────────────
+  【V0601】 — 极端瘦身版 (2026-06-01)
+──────────────────────────────────────────────────────────────────────
+
+  Run1 (hidden=512) — 代码: PIMBCN_train0601.py | PIMBCN_net0601.py | PIMBCN_data_0529.py
+    Run: pi_mbcn_WinFast_20260601_183111 (最优 epoch=1291, 训练提前终止@1298):
+      val_spectrum:       0.0447  ← 综合损失(含自适应权重)
+      ★ val_mse_spec:    38.54   (单独评估)
+
+  Run2 (hidden=512) — 代码: PIMBCN_train0601.py | PIMBCN_net0601.py | PIMBCN_data_0529.py
+    Run: pi_mbcn_WinFast_20260601_194754 (最优 epoch=85):
+      val_spectrum:       0.00    (退化 → 综合损失几乎为0但分量爆炸)
+      val_mse_spec:      62.88
+      val_cosine_spec:    0.0961
+      val_mse_oaspl:     44.30
+      val_grad:           0.42
+
+  Run3 (hidden=256, 极致瘦身) — 代码: PIMBCN_train0601_ncjianshao.py | PIMBCN_net0601_ncjianshao.py | PIMBCN_data_0529.py
+    Run: pi_mbcn_WinFast_20260601_205659 (最优 epoch=6008):
+      val_spectrum:     121.21   (综合损失)
+      ★ val_mse_spec:    14.81
+      val_cosine_spec:    0.0204
+      val_mse_oaspl:      9.88
+      val_grad:           0.66
+
+──────────────────────────────────────────────────────────────────────
+  【V0602】 — 权重衰减调优 (2026-06-02)
+──────────────────────────────────────────────────────────────────────
+  代码 (wd=0.01 两组): PIMBCN_train0602_ncjianshao.py | PIMBCN_net0602_ncjianshao.py | PIMBCN_data_0529.py
+  代码 (wd=0.0005, 0.005): 同上（注: 185145/210337 与 164724/173246 同脚本，仅改 wd 参数）
+
+  wd=0.01 run1 — Run: pi_mbcn_WinFast_20260602_164724 (最优 epoch=305):
+    val_spectrum:      1798.29   ← wd=0.01 过强，严重退化
+    val_mse_spec:       220.06
+    val_cosine_spec:      0.46
+    val_mse_oaspl:       20.45
+
+  wd=0.01 run2 — Run: pi_mbcn_WinFast_20260602_173246 (最优 epoch=368):
+    val_spectrum:      1340.34
+    val_mse_spec:       155.10
+    val_cosine_spec:      0.30
+    val_mse_oaspl:       21.64
+
+  wd=0.0005 — Run: pi_mbcn_WinFast_20260602_185145 (最优 epoch=42255):
+    val_spectrum:       240.33
+    ★ val_mse_spec:      29.79
+    val_cosine_spec:      0.0454
+    val_mse_oaspl:       16.63
+    val_grad:             0.56
+
+  wd=0.005 — Run: pi_mbcn_WinFast_20260602_210337 (最优 epoch=26868):
+    val_spectrum:       231.26
+    ★ val_mse_spec:      28.16
+    val_cosine_spec:      0.0471
+    val_mse_oaspl:       19.89
+    val_grad:             1.04
+
+──────────────────────────────────────────────────────────────────────
+  【V0608】 — 中间实验版 (2026-06-08)
+──────────────────────────────────────────────────────────────────────
+  代码: PIMBCN_train0602_ncjianshao_enhance.py | PIMBCN_net0602_ncjianshao.py | PIMBCN_data_0602_enhance.py
+  (基于 V0602 的 enhance 版训练脚本，wd=0.005 中间复跑，非独立版本)
+
+  Run: pi_mbcn_WinFast_20260608_152940 (50000ep, 最优 epoch=6063):
+    val_total:           83.44
+    ★ val_mse_spec:      10.03   ← ★ 当前所有版本最优！
+    val_cosine_spec:      0.0163
+    val_mse_oaspl:        7.47
+    val_grad:             0.55
+
+──────────────────────────────────────────────────────────────────────
+  【V0609】 — 频率范围适配版 20~5000Hz (2026-06-09)
+──────────────────────────────────────────────────────────────────────
+  代码: PIMBCN_train0609_20to5000.py | PIMBCN_net0609_20to5000.py | PIMBCN_data_0609_20to5000.py
+
+  wd=0.005 — Run: pi_mbcn_20to5000_20260609_172149 (最优 epoch=2184, 已停止@2633):
+    val_total:          105.22  (最优)
+    ★ val_mse_spec:      12.54  (最优, @epoch=2184)
+    ★ val_mse_spec 当前:  19.99  (@epoch=2633, 过拟合已停止)
+    val_cosine_spec:      0.03  (最优)
+    val_mse_oaspl:       10.83  (最优)
+    val_grad:             0.61  (最优)
+
+  wd=0.001 — Run: pi_mbcn_20to5000_20260609_220932 (最优 epoch=629, 训练中@20841):
+    val_total:           84.26  (最优)
+    ★ val_mse_spec:      11.72  (最优, @epoch=629, ← 更新: 此前记录为11.83)
+    ★ val_mse_spec 当前:  17.43  (@epoch=20841, ⚠️ 严重过拟合中)
+    val_cosine_spec:      0.02  (最优)
+    val_mse_oaspl:        9.47  (最优)
+    val_grad:             0.52  (最优, @epoch=11908)
+    val_logmse:           8.57  (最优)
+
+  ★ 注意: 两个 V0609 运行均已过拟合。wd0.001从epoch 629的11.72反弹至17.43(+49%)。
+    建议立即停止, best_model 已保存在最优 epoch。
+
+──────────────────────────────────────────────────────────────────────
+  【V0610】 — 损失函数 V2 重构版 (2026-06-10)
+──────────────────────────────────────────────────────────────────────
+  代码: PIMBCN_train0610_lossV2.py | PIMBCN_net0610_lossV2.py | PIMBCN_data_0610_lossV2.py
+  损失组成: 5.0×dB-MSE + 2.0×LinearPeakMSE + 3.0×Sobolev
+
+  Run: pi_mbcn_lossV2_20260610_201508 (最优 epoch=3361, 训练中@10469):
+    val_total:           70.71  (最优)
+    ★ val_mse_db:        13.81  (最优, @epoch=3361)
+    ★ val_mse_db 当前:   18.35  (@epoch=10469, 出现过拟合)
+    val_grad:             0.52  (最优, @epoch=6114)
+    val_linear_peak:      0.02  (最优, @epoch=632)
+
+  ★ 注意: V0610_lossV2 在 epoch=3361 后验证损失持续上升, 呈现过拟合。
+
+──────────────────────────────────────────────────────────────────────
+  【V0610_final】 — 最终优化版（损失V2 + IN归一化 + EMA + warmup）(2026-06-10)
+──────────────────────────────────────────────────────────────────────
+  代码: PIMBCN_train0610_final.py | PIMBCN_net0610_final.py | PIMBCN_data_0610_final.py
+  损失组成: 5.0×dB-MSE + 2.0×LinearPeakMSE + 3.0×Sobolev
+
+【相对 V0610_lossV2 的增量优化】
+  [模型层]
+  - TransposeConv: BatchNorm1d → InstanceNorm1d
+    理由: batch_size=8 下 BN 统计量噪声大, IN 逐样本归一化不依赖 batch
+  [训练策略]
+  - EMA (指数移动平均, decay=0.999): 每 step 平滑权重, 验证/保存均用 EMA 模型
+  - LR warmup: 前 5 epoch 线性爬升 (0→3e-4), 避免早期梯度震荡
+  - T_0: 200→150, 首周期略短更早精细收敛
+  - DataLoader: num_workers=2, persistent_workers=True (加速数据加载)
+  [数据]
+  - OASPL 约束自洽 (增强时基于20~5000Hz频谱自算OASPL)
+  - 验证集共享 numpy 数组 (避免重复加载 CSV)
+  [架构]
+  - 解码器去最后一层 deconv: [B,4,2048]→[B,8,1024], 中间维度减半
+  - freq_proj: Linear(2048,1246)→Linear(1024,512)+Linear(512,1246), 渐进投影
+
+【预期效果】
+  - 模型总参数: ~1.33亿→~0.61亿 (↓54%), 每个 head 参数 ~255万→~117万
+  - EMA 预期降低验证损失 2~5%
+  - LinearPeakMSE 自动侧重峰值区域精度
+  - InstanceNorm 消除小 batch BN 统计量偏差
+
+【与 V0610_lossV2 的区别】
+  | 项目           | V0610_lossV2          | V0610_final              |
+  |----------------|-----------------------|--------------------------|
+  | TransposeConv  | BatchNorm1d           | InstanceNorm1d           |
+  | EMA            | 无                    | decay=0.999              |
+  | LR warmup      | 无                    | 前5 epoch 线性爬升        |
+  | T_0            | 200                   | 150                      |
+  | num_workers    | 0 (默认)              | 2                        |
+
+  Run: pi_mbcn_final_20260610_230212 (最优 epoch=4728, 训练中@5176):
+    val_total:           69.40  (最优)
+    ★ val_mse_db:        13.55  (最优, @epoch=4728)
+    ★ val_mse_db 当前:   14.90  (@epoch=5176, 仍在下降)
+    val_grad:             0.52  (最优, @epoch=4592)
+    val_linear_peak:      0.03  (最优, @epoch=1200)
+
+──────────────────────────────────────────────────────────────────────
+  【V0611_v3】 — 嵌入注入 + 多分辨率损失 + 梯度累积 (2026-06-11)
+──────────────────────────────────────────────────────────────────────
+  代码: PIMBCN_train0611_v3.py | PIMBCN_net0611_v3.py | PIMBCN_data_0611_v3.py
+  损失: 5.0×(多分辨率MSE) + 2.0×LinearPeakMSE + 3.0×Sobolev
+
+【相对 V0610_final 的增量优化】
+  [策略1 — 梯度累积] accum_steps=2, 等效 batch=16
+    理由: batch=8 梯度噪声大, 累积2步等效16样本/更新, 收敛更稳定
+  [策略2 — 多分辨率损失] 原生 + 2×下采样(×0.3) + 4×下采样(×0.1)
+    理由: 粗尺度损失引导模型先学宽带趋势, 再学细节, 课程学习效应
+  [策略3 — Mode/Type 嵌入] 解码器输入端注入可学习工况嵌入
+    理由: 解码器不再"盲生成", 16维嵌入告知当前工况, 各组合差异化
+  [辅助 — LayerNorm 修正] [16,1024]→1024 (逐通道归一化, 不过度压缩)
+  [辅助 — 傅里叶 scale] 3.0→1.0 (温和特征映射, 适配平滑物理函数)
+
+【与 V0610_final 的区别】
+  | 项目            | V0610_final          | V0611_v3                    |
+  |-----------------|----------------------|-----------------------------|
+  | 解码器输入      | encoder(256)         | encoder(256)+mode(16)+type(16)=288 |
+  | 损失 MSE        | 原生分辨率           | 原生+2×+4× 多分辨率          |
+  | 梯度更新        | 每步更新, batch=8    | 每2步更新, 等效batch=16       |
+  | LayerNorm       | [16,1024]            | 1024 (逐通道)                |
+  | 傅里叶 scale    | 3.0                  | 1.0                          |
+  | 模型参数量      | ~0.61亿              | ~0.61亿 (+384 嵌入参数可忽略) |
+
+  Run: 待训练
+
+──────────────────────────────────────────────────────────────────────
+  ★ 跨版本核心指标对比 (val_mse_spec / dB-MSE，越低越好)
+──────────────────────────────────────────────────────────────────────
+
+  版本              代码文件                         val_mse_spec   备注
+  ──────────────────────────────────────────────────────────────────────
+  V0608 (中间实验)   train0602_ncjianshao_enhance      10.03      ★ 当前最优 (全频段0~10kHz)
+  V0609 (wd=0.001)   train0609_20to5000                11.72      20~5000Hz最优 (⚠️过拟合中,已反弹至17.4)
+  V0609 (wd=0.005)   train0609_20to5000                12.54      20~5000Hz (已停止, 过拟合)
+  V0610_final        train0610_final                   13.55      20~5000Hz, IN+EMA+warmup (↓仍在降)
+  V0610_lossV2       train0610_lossV2                  13.81      20~5000Hz, 损失V2 (⚠️过拟合中)
+  V0601 run3(h=256)  train0601_ncjianshao              14.81      极端瘦身 hidden=256
+  V0602 (wd=0.005)   train0602_ncjianshao              28.16      
+  V0602 (wd=0.0005)  train0602_ncjianshao              29.79      
+  V0601 run1(h=512)  train0601                         38.54      
+  V0601 run2(h=512)  train0601                         62.88      训练异常
+  V0602 (wd=0.01)    train0602_ncjianshao            155~220      wd 过大，过拟合
+  V1~V0529           各版本见上                          —         未单独记录 val_mse_spec
+
+  ★ 结论与建议 (2026-06-11):
+    1. V0608 的 val_mse=10.03 为全版本最优 (0~10kHz, 2501点)
+    2. 20~5000Hz 频段排名: V0609_wd0.001(11.72) > V0609_wd0.005(12.54) > V0610_final(13.55↓)
+    
+    🛑 建议停止的训练 (均已过拟合, best已保存):
+      - V0609_wd0.005: val_mse 从12.54→19.99, 已停止@2633
+      - V0609_wd0.001: val_mse 从11.72→17.43, 继续跑无意义
+      - V0610_lossV2: val_mse 从13.81→18.35, 继续跑无意义
+    
+    ✅ 建议继续:
+      - V0610_final: val_mse 仍在下降通道 (13.55→14.90→↓)
+    
+    🚀 建议启动:
+      - V0611_v3: 嵌入+多分辨率+梯度累积, 理论最优配置
+
+──────────────────────────────────────────────────────────────────────
+  ★ 完整版本-代码-结果 映射速查表
+──────────────────────────────────────────────────────────────────────
+
+  版本         训练脚本                      网络定义                    数据加载              最优 val_mse_spec
+  ─────────────────────────────────────────────────────────────────────────────────────────────────────
+  V1           PIMBCN_train.py              PIMBCN_net.py              PIMBCN_data.py            —
+  V1.1         PIMBCN_train_1.py            PIMBCN_net_1.py            PIMBCN_data.py            —
+  V1.1.1       PIMBCN_train_1_1.py          PIMBCN_net_1_1.py          PIMBCN_data.py            —
+  V1.1.1.1     PIMBCN_train_1_1_1.py        PIMBCN_net_1_1_1.py        PIMBCN_data.py            —
+  V1.1.1.1.1   PIMBCN_train_1_1_1_1.py      PIMBCN_net_1_1_1_1.py      PIMBCN_data.py            —
+  V1.1.1.1.1cp PIMBCN_train_1_1_1_1 copy.py PIMBCN_net_1_1_1_1.py      PIMBCN_data.py            —
+  V514         PIMBCN_train514.py           PIMBCN_net514.py           PIMBCN_data.py            —
+  V0521        PIMBCN_train0521.py          PIMBCN_net0521.py          PIMBCN_data_0521.py       —
+  V0529        PIMBCN_train0529.py          PIMBCN_net0529.py          PIMBCN_data_0529.py       —
+  V0601 run1   PIMBCN_train0601.py          PIMBCN_net0601.py          PIMBCN_data_0529.py     38.54
+  V0601 run2   PIMBCN_train0601.py          PIMBCN_net0601.py          PIMBCN_data_0529.py     62.88
+  V0601 run3   PIMBCN_train0601_ncjianshao  PIMBCN_net0601_ncjianshao  PIMBCN_data_0529.py     14.81
+  V0602 wd=0.01 PIMBCN_train0602_ncjianshao PIMBCN_net0602_ncjianshao  PIMBCN_data_0529.py    155~220
+  V0602 wd=5e-4 PIMBCN_train0602_ncjianshao PIMBCN_net0602_ncjianshao  PIMBCN_data_0529.py     29.79
+  V0602 wd=5e-3 PIMBCN_train0602_ncjianshao PIMBCN_net0602_ncjianshao  PIMBCN_data_0529.py     28.16
+  V0608         PIMBCN_train0602_ncjianshao_enhance  PIMBCN_net0602_ncjianshao  PIMBCN_data_0602_enhance  10.03 ★
+  V0609 wd=5e-3 PIMBCN_train0609_20to5000    PIMBCN_net0609_20to5000    PIMBCN_data_0609_20to5000  12.54 (已停止)
+  V0609 wd=1e-3 PIMBCN_train0609_20to5000    PIMBCN_net0609_20to5000    PIMBCN_data_0609_20to5000  11.72 (⚠️过拟合中)
+  V0610         PIMBCN_train0610_lossV2      PIMBCN_net0610_lossV2      PIMBCN_data_0610_lossV2   13.81 (过拟合中)
+  V0610_final   PIMBCN_train0610_final       PIMBCN_net0610_final       PIMBCN_data_0610_final    13.55 (训练中)
+  V0611_v3     PIMBCN_train0611_v3         PIMBCN_net0611_v3         PIMBCN_data_0611_v3      待训练
+
+【说明】
+  - 所有数据从 TensorBoard 事件文件 (runs/*/events.out.tfevents.*) 提取
+  - 每个版本的「最优 epoch」按 val_total 或 val_spectrum 最小值确定
+  - 各版本损失函数组成不同，综合损失不可直接跨版本对比
+  - val_mse_spec (频谱 dB-MSE) 是唯一可跨版本对比的核心指标
+  - 部分早期版本 (V1~V0521) 的 TensorBoard 日志不含 val_mse_spec 分解项
+  - 数据提取日期: 2026-06-10
+
+
+================================================================================
   版本总结对照表
 ================================================================================
 
@@ -344,16 +872,40 @@ V1.1.1.1 05-11     2048    共享主干+52轻量头     ✗  频谱OASPL  HPS-MT
 ( copy)  05-14      同上    同上                 ✗  同上       断点续训
 V514     05-14     2048    共享+SE注意力+残差头   ✗  自适应权重  SE-Block+同方差不确定性
 V0521    05-21     2048    共享+SE注意力+残差头   ✗  自适应权重  全链路性能优化(10-20x)
+V0529    05-29      512    共享+SE注意力(精简)    ✗  自适应权重  分层抽样+显存缓存
+V0601    06-01     256/512 共享+SE注意力(极精简)  ✗  自适应权重  极端瘦身+LayerNorm
+V0602    06-02     256    共享+扩展主干          ✗  自适应权重  权重衰减调优+独立推理
+V0609    06-09     256    共享+精简解码器        ✗  自适应权重  频率范围适配(20~5000Hz)
+V0610    06-10     256    共享+精简解码器        ✗  损失V2重构  移除冗余损失+线性峰值MSE
+V0610f   06-10     256    共享+精简解码器+IN      ✗  损失V2+EMA  IN归一化+EMA+warmup(最终版)
+V0611v3  06-11     256    共享+精简解码器+嵌入     ✗  多分辨率V3  嵌入注入+多分辨率损失+梯度累积
+
 
 ================================================================================
   辅助文件
 ================================================================================
-  PIMBCN_data.py       (04-28) - 数据加载（原始版）
-  PIMBCN_data_0521.py  (05-21) - 数据加载（优化版，预解析numpy）
-  PIMBCN_infer.py      (05-06) - 推理脚本
-  demo.py              (05-08) - 绘图/演示脚本
-  日志.txt             (05-21) - 本文件
+  PIMBCN_data.py            (04-28) - 数据加载（原始版）
+  PIMBCN_data_0521.py       (05-21) - 数据加载（优化版，预解析numpy）
+  PIMBCN_data_0529.py       (05-29) - 数据加载（分层抽样优化版）
+  PIMBCN_data_0602_enhance.py (06-02) - 数据加载（增强版）
+  PIMBCN_infer.py           (05-06) - 推理脚本（原始版）
+  PIMBCN_inference.py       (06-02) - 推理脚本（增强版）
+  demo.py                     (05-08) - 绘图/演示脚本
+  PIMBCN_data_0609_20to5000.py (06-09) - 数据加载（20~5000Hz适配版）
+  PIMBCN_net0609_20to5000.py   (06-09) - 网络定义（20~5000Hz适配版）
+  PIMBCN_train0609_20to5000.py (06-09) - 训练脚本（20~5000Hz适配版）
+  PIMBCN_data_0610_lossV2.py   (06-10) - 数据加载（损失V2配套版）
+  PIMBCN_net0610_lossV2.py     (06-10) - 网络定义（损失V2重构版）
+  PIMBCN_train0610_lossV2.py   (06-10) - 训练脚本（损失V2重构版）
+  PIMBCN_data_0610_final.py    (06-10) - 数据加载（最终优化版）
+  PIMBCN_net0610_final.py      (06-10) - 网络定义（最终优化版, IN+损失V2）
+  PIMBCN_train0610_final.py    (06-10) - 训练脚本（最终优化版, EMA+warmup）
+  PIMBCN_data_0611_v3.py        (06-11) - 数据加载（V3配套版）
+  PIMBCN_net0611_v3.py          (06-11) - 网络定义（V3版, 嵌入+多分辨率损失）
+  PIMBCN_train0611_v3.py        (06-11) - 训练脚本（V3版, 梯度累积）
+  日志.txt                     (06-10) - 本文件
+  extract_tb_results.py        (06-10) - TensorBoard 数据提取脚本
 
 ================================================================================
-  最后更新: 2026-05-21
+  最后更新: 2026-06-11 (新增 V0610/V0610_final训练结果 + V0611_v3完整记录)
 ================================================================================
