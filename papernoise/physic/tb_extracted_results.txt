@@ -1,0 +1,530 @@
+================================================================================
+  TensorBoard 验证集指标提取结果
+================================================================================
+
+
+──────────────────────────────────────────────────────────────────────
+  [V0609 (wd=0.005)]  pi_mbcn_20to5000_20260609_172149_epochs50000_bs8_wd0.005
+──────────────────────────────────────────────────────────────────────
+  训练集最终指标:
+    Loss/train_total: 57.2026 @epoch=2633
+    Loss/train_mse_spec: 6.5374 @epoch=2633
+    Loss/train_cosine_spec: 0.0065 @epoch=2633
+    Loss/train_mse_oaspl: 5.3624 @epoch=2633
+    Loss/train_grad: 1.2950 @epoch=2633
+  验证集指标:
+    Loss/val_total: best=105.2185 @epoch=2184, last=166.6474 @epoch=2633
+    Loss/val_mse_spec: best=12.5387 @epoch=2184, last=19.9942 @epoch=2633
+    Loss/val_cosine_spec: best=0.0264 @epoch=2570, last=0.0310 @epoch=2633
+    Loss/val_mse_oaspl: best=10.8324 @epoch=2184, last=17.0166 @epoch=2633
+    Loss/val_grad: best=0.6101 @epoch=2533, last=0.6775 @epoch=2633
+
+──────────────────────────────────────────────────────────────────────
+  [V0609 (wd=0.001)]  pi_mbcn_20to5000_20260609_220932_epochs50000_bs8_wd0.001
+──────────────────────────────────────────────────────────────────────
+  训练集最终指标:
+    Loss/train_total: 20.1434 @epoch=11757
+    Loss/train_mse_spec: 2.0644 @epoch=11757
+    Loss/train_cosine_spec: 0.0031 @epoch=11757
+    Loss/train_mse_oaspl: 1.0773 @epoch=11757
+    Loss/train_grad: 1.2830 @epoch=11757
+    Loss/train_logmse: 2.4048 @epoch=11757
+  验证集指标:
+    Loss/val_total: best=85.3353 @epoch=609, last=128.7116 @epoch=11757
+    Loss/val_mse_spec: best=11.8326 @epoch=345, last=18.4656 @epoch=11757
+    Loss/val_cosine_spec: best=0.0192 @epoch=289, last=0.0439 @epoch=11757
+    Loss/val_mse_oaspl: best=9.4666 @epoch=356, last=14.0840 @epoch=11757
+    Loss/val_grad: best=0.5211 @epoch=11757, last=0.5211 @epoch=11757
+    Loss/val_logmse: best=8.5677 @epoch=289, last=13.4329 @epoch=11757
+
+──────────────────────────────────────────────────────────────────────
+  [V0529 (run1)]  pi_mbcn_WinFast_20260529_162937_epochs50000_bs8_wd0.005
+──────────────────────────────────────────────────────────────────────
+  训练集最终指标:
+    Loss/train_total: -8.4470 @epoch=1443
+    Loss/train_mse_spec: 0.4323 @epoch=1443
+  验证集指标:
+    Loss/val_spectrum: best=34.7218 @epoch=1292, last=52.5264 @epoch=1443
+
+──────────────────────────────────────────────────────────────────────
+  [V0529 (run2)]  pi_mbcn_WinFast_20260529_224446_epochs50000_bs8_wd0.005
+──────────────────────────────────────────────────────────────────────
+  训练集最终指标:
+    Loss/train_total: -15.7599 @epoch=49369
+    Loss/train_mse_spec: 0.0995 @epoch=49369
+  验证集指标:
+    Loss/val_spectrum: best=39.3513 @epoch=43946, last=56.3700 @epoch=49369
+
+──────────────────────────────────────────────────────────────────────
+  [V0601 (run1, hidden=512)]  pi_mbcn_WinFast_20260601_183111_epochs50000_bs8_wd0.005
+──────────────────────────────────────────────────────────────────────
+  训练集最终指标:
+    Loss/train_total: 0.0011 @epoch=1298
+    Loss/train_mse_spec: 1.0424 @epoch=1298
+    Loss/train_cosine_spec: 0.0011 @epoch=1298
+    Loss/train_mse_oaspl: 0.9717 @epoch=1298
+    Loss/train_grad: 0.1196 @epoch=1298
+  验证集指标:
+    Loss/val_spectrum: best=0.0447 @epoch=1291, last=0.0596 @epoch=1298
+
+──────────────────────────────────────────────────────────────────────
+  [V0601 (run2, hidden=512)]  pi_mbcn_WinFast_20260601_194754_epochs50000_bs8_wd0.005
+──────────────────────────────────────────────────────────────────────
+  训练集最终指标:
+    Loss/train_total: 0.0000 @epoch=1936
+    Loss/train_mse_spec: 4.8258 @epoch=1936
+    Loss/train_cosine_spec: 0.0093 @epoch=1936
+    Loss/train_mse_oaspl: 1.1822 @epoch=1936
+    Loss/train_grad: 0.3848 @epoch=1936
+  验证集指标:
+    Loss/val_spectrum: best=0.0000 @epoch=1919, last=0.0000 @epoch=1936
+    Loss/val_mse_spec: best=62.8818 @epoch=85, last=79.2686 @epoch=1936
+    Loss/val_cosine_spec: best=0.0961 @epoch=85, last=0.1128 @epoch=1936
+    Loss/val_mse_oaspl: best=44.2954 @epoch=85, last=51.3279 @epoch=1936
+    Loss/val_grad: best=0.4204 @epoch=17, last=0.4320 @epoch=1936
+
+──────────────────────────────────────────────────────────────────────
+  [V0601 (run3, hidden=256)]  pi_mbcn_WinFast_20260601_205659_epochs50000_bs8_wd0.005
+──────────────────────────────────────────────────────────────────────
+  训练集最终指标:
+    Loss/train_total: 0.4408 @epoch=18723
+    Loss/train_mse_spec: 0.0504 @epoch=18723
+    Loss/train_cosine_spec: 0.0001 @epoch=18723
+    Loss/train_mse_oaspl: 0.0116 @epoch=18723
+    Loss/train_grad: 0.0207 @epoch=18723
+  验证集指标:
+    Loss/val_spectrum: best=121.2105 @epoch=6008, last=187.8772 @epoch=18723
+    Loss/val_mse_spec: best=14.8140 @epoch=6008, last=22.9759 @epoch=18723
+    Loss/val_cosine_spec: best=0.0204 @epoch=4084, last=0.0346 @epoch=18723
+    Loss/val_mse_oaspl: best=9.8801 @epoch=6008, last=16.1585 @epoch=18723
+    Loss/val_grad: best=0.6596 @epoch=13545, last=0.6957 @epoch=18723
+
+──────────────────────────────────────────────────────────────────────
+  [V0602 (wd=0.01, run1)]  pi_mbcn_WinFast_20260602_164724_epochs50000_bs8_wd0.01
+──────────────────────────────────────────────────────────────────────
+  训练集最终指标:
+    Loss/train_total: 1621.1842 @epoch=327
+    Loss/train_mse_spec: 199.3913 @epoch=327
+    Loss/train_cosine_spec: 0.4360 @epoch=327
+    Loss/train_mse_oaspl: 7.6194 @epoch=327
+    Loss/train_grad: 51.3338 @epoch=327
+  验证集指标:
+    Loss/val_spectrum: best=1798.2853 @epoch=305, last=1807.5809 @epoch=327
+    Loss/val_mse_spec: best=220.0603 @epoch=322, last=222.3238 @epoch=327
+    Loss/val_cosine_spec: best=0.4601 @epoch=245, last=0.4639 @epoch=327
+    Loss/val_mse_oaspl: best=20.4525 @epoch=207, last=24.1532 @epoch=327
+    Loss/val_grad: best=19.4305 @epoch=1, last=51.4671 @epoch=327
+
+──────────────────────────────────────────────────────────────────────
+  [V0602 (wd=0.01, run2)]  pi_mbcn_WinFast_20260602_173246_epochs50000_bs8_wd0.01
+──────────────────────────────────────────────────────────────────────
+  训练集最终指标:
+    Loss/train_total: 1208.7668 @epoch=1125
+    Loss/train_mse_spec: 144.2294 @epoch=1125
+    Loss/train_cosine_spec: 0.2944 @epoch=1125
+    Loss/train_mse_oaspl: 20.7351 @epoch=1125
+    Loss/train_grad: 44.8095 @epoch=1125
+  验证集指标:
+    Loss/val_spectrum: best=1340.3411 @epoch=368, last=1409.0516 @epoch=1125
+    Loss/val_mse_spec: best=155.0975 @epoch=907, last=156.1955 @epoch=1125
+    Loss/val_cosine_spec: best=0.3008 @epoch=915, last=0.3024 @epoch=1125
+    Loss/val_mse_oaspl: best=21.6446 @epoch=131, last=118.7153 @epoch=1125
+    Loss/val_grad: best=18.0211 @epoch=1, last=49.9076 @epoch=1125
+
+──────────────────────────────────────────────────────────────────────
+  [V0602 (wd=0.0005)]  pi_mbcn_WinFast_20260602_185145_epochs50000_bs8_wd0.0005
+──────────────────────────────────────────────────────────────────────
+  训练集最终指标:
+    Loss/train_total: 16.6553 @epoch=50000
+    Loss/train_mse_spec: 2.0188 @epoch=50000
+    Loss/train_cosine_spec: 0.0040 @epoch=50000
+    Loss/train_mse_oaspl: 1.4108 @epoch=50000
+    Loss/train_grad: 0.1183 @epoch=50000
+  验证集指标:
+    Loss/val_spectrum: best=240.3300 @epoch=42255, last=336.6943 @epoch=50000
+    Loss/val_mse_spec: best=29.7879 @epoch=42255, last=41.7627 @epoch=50000
+    Loss/val_cosine_spec: best=0.0454 @epoch=42255, last=0.0636 @epoch=50000
+    Loss/val_mse_oaspl: best=16.6289 @epoch=11149, last=25.0381 @epoch=50000
+    Loss/val_grad: best=0.5649 @epoch=2002, last=1.0905 @epoch=50000
+
+──────────────────────────────────────────────────────────────────────
+  [V0602 (wd=0.005)]  pi_mbcn_WinFast_20260602_210337_epochs50000_bs8_wd0.005
+──────────────────────────────────────────────────────────────────────
+  训练集最终指标:
+    Loss/train_total: 67.1154 @epoch=33301
+    Loss/train_mse_spec: 8.3259 @epoch=33301
+    Loss/train_cosine_spec: 0.0143 @epoch=33301
+    Loss/train_mse_oaspl: 1.3231 @epoch=33301
+    Loss/train_grad: 1.5622 @epoch=33301
+  验证集指标:
+    Loss/val_spectrum: best=231.2643 @epoch=26868, last=299.2057 @epoch=33301
+    Loss/val_mse_spec: best=28.1599 @epoch=26868, last=36.5301 @epoch=33301
+    Loss/val_cosine_spec: best=0.0471 @epoch=11821, last=0.0597 @epoch=33301
+    Loss/val_mse_oaspl: best=19.8949 @epoch=11805, last=26.2007 @epoch=33301
+    Loss/val_grad: best=1.0352 @epoch=27823, last=1.0985 @epoch=33301
+
+──────────────────────────────────────────────────────────────────────
+  [V0608 (中间实验)]  pi_mbcn_WinFast_20260608_152940_epochs50000_bs8_wd0.005
+──────────────────────────────────────────────────────────────────────
+  训练集最终指标:
+    Loss/train_total: 20.0613 @epoch=35416
+    Loss/train_mse_spec: 2.1458 @epoch=35416
+    Loss/train_cosine_spec: 0.0047 @epoch=35416
+    Loss/train_mse_oaspl: 0.9582 @epoch=35416
+    Loss/train_grad: 1.1917 @epoch=35416
+  验证集指标:
+    Loss/val_total: best=83.4401 @epoch=6063, last=117.0404 @epoch=35416
+    Loss/val_mse_spec: best=10.0349 @epoch=5757, last=14.0589 @epoch=35416
+    Loss/val_cosine_spec: best=0.0163 @epoch=5531, last=0.0261 @epoch=35416
+    Loss/val_mse_oaspl: best=7.4714 @epoch=6092, last=11.6061 @epoch=35416
+    Loss/val_grad: best=0.5528 @epoch=20123, last=0.5561 @epoch=35416
+
+──────────────────────────────────────────────────────────────────────
+  [Early (04-28 run1)]  pi_mbcn_hvac_20260428_161913_epochs100_bs16_lr0.001_dir_csvdata333
+──────────────────────────────────────────────────────────────────────
+  训练集最终指标:
+    Loss/train_total: 15756.0342 @epoch=14
+  验证集指标:
+    Loss/val_total: best=168.7655 @epoch=14, last=168.7655 @epoch=14
+  其他指标:
+    Loss/phy_penalty: last=0.0004 @epoch=14
+    Physics/alpha_avg: last=4.0007 @epoch=14
+
+──────────────────────────────────────────────────────────────────────
+  [Early (04-28 run2)]  pi_mbcn_hvac_20260428_163839_epochs100_bs16_lr0.001_dir_csvdata333
+──────────────────────────────────────────────────────────────────────
+  训练集最终指标:
+    Loss/train_total: 14432.2695 @epoch=100
+  验证集指标:
+    Loss/val_total: best=154.1701 @epoch=95, last=154.3083 @epoch=100
+  其他指标:
+    Loss/phy_penalty: last=0.0000 @epoch=100
+    Physics/alpha_avg: last=0.8740 @epoch=100
+
+──────────────────────────────────────────────────────────────────────
+  [Early (04-28 run3)]  pi_mbcn_hvac_20260428_213447_epochs200_bs16_lr0.001_dir_csvdata333
+──────────────────────────────────────────────────────────────────────
+  训练集最终指标:
+    Loss/train_total: 14327.7363 @epoch=200
+  验证集指标:
+    Loss/val_oaspl: best=5.4836 @epoch=151, last=7.0414 @epoch=200
+    Loss/val_octave: best=2.0239 @epoch=183, last=2.8355 @epoch=200
+    Loss/val_spectrum: best=302.3753 @epoch=198, last=302.7030 @epoch=200
+    Loss/val_total: best=152.3303 @epoch=183, last=152.7692 @epoch=200
+  其他指标:
+    Loss/phy_penalty: last=0.0000 @epoch=200
+    Physics/alpha_avg: last=0.7906 @epoch=200
+
+──────────────────────────────────────────────────────────────────────
+  [V1 (备选/早期)]  pi_mbcn_hvac_20260504_181809_epochs200_bs8_lr0.001_dir_csvdata333
+──────────────────────────────────────────────────────────────────────
+  训练集最终指标:
+    Loss/train_total: 578.2966 @epoch=21
+    Loss/train_mse_spec_loss: 230.6974 @epoch=21
+    Loss/train_cosine_spec_loss: 0.3571 @epoch=21
+    Loss/train_mse_oaspl_loss: 35.0697 @epoch=21
+    Loss/train_mse_octave_loss: 15.4479 @epoch=21
+  验证集指标:
+    Loss/val_oaspl: best=21.1112 @epoch=20, last=22.3801 @epoch=21
+    Loss/val_octave: best=8.5315 @epoch=20, last=10.7088 @epoch=21
+    Loss/val_spectrum: best=254.0727 @epoch=19, last=254.9369 @epoch=21
+    Loss/val_total: best=132.2374 @epoch=20, last=132.8228 @epoch=21
+  其他指标:
+    Loss/phy_penalty: last=0.0003 @epoch=21
+    Physics/alpha_avg: last=4.0240 @epoch=21
+
+──────────────────────────────────────────────────────────────────────
+  [V1 (备选/早期)]  pi_mbcn_hvac_20260504_184559_epochs200_bs8_lr0.001_dir_csvdata333
+──────────────────────────────────────────────────────────────────────
+  训练集最终指标:
+    Loss/train_total: 267.0258 @epoch=200
+    Loss/train_mse_spec_loss: 160.8764 @epoch=200
+    Loss/train_cosine_spec_loss: 0.1771 @epoch=200
+    Loss/train_mse_oaspl_loss: 10.1655 @epoch=200
+    Loss/train_mse_octave_loss: 4.7106 @epoch=200
+  验证集指标:
+    Loss/val_oaspl: best=6.5269 @epoch=197, last=9.0335 @epoch=200
+    Loss/val_octave: best=4.2050 @epoch=195, last=4.4465 @epoch=200
+    Loss/val_spectrum: best=230.5408 @epoch=171, last=235.7726 @epoch=200
+    Loss/val_total: best=117.4701 @epoch=171, last=120.1096 @epoch=200
+  其他指标:
+    Loss/phy_penalty: last=0.0003 @epoch=200
+    Physics/alpha_avg: last=2.1102 @epoch=200
+
+──────────────────────────────────────────────────────────────────────
+  [V1]  pi_mbcn_hvac_20260506_150414_epochs200_bs8_lr0.001_dir_csvdata333
+──────────────────────────────────────────────────────────────────────
+  训练集最终指标:
+    Loss/train_total: 599.4282 @epoch=200
+    Loss/train_mse_spec_loss: 179.7754 @epoch=200
+    Loss/train_cosine_spec_loss: 0.1361 @epoch=200
+    Loss/train_mse_oaspl_loss: 9.0444 @epoch=200
+    Loss/train_mse_octave_loss: 4.2308 @epoch=200
+  验证集指标:
+    Loss/val_oaspl: best=7.2695 @epoch=151, last=9.9784 @epoch=200
+    Loss/val_octave: best=4.5156 @epoch=169, last=5.4964 @epoch=200
+    Loss/val_spectrum: best=215.9346 @epoch=97, last=220.5947 @epoch=200
+    Loss/val_total: best=110.7920 @epoch=143, last=113.0456 @epoch=200
+  其他指标:
+    Loss/phy_penalty: last=0.0004 @epoch=200
+    Physics/alpha_avg: last=1.9230 @epoch=200
+
+──────────────────────────────────────────────────────────────────────
+  [V1.1.1]  pi_mbcn_hvac_20260506_171933_epochs200_bs8_lr0.001_dir_csvdata333
+──────────────────────────────────────────────────────────────────────
+  训练集最终指标:
+    Loss/train_total: 210.2139 @epoch=200
+    Loss/train_mse_spec_loss: 179.2485 @epoch=200
+    Loss/train_cosine_spec_loss: 0.1540 @epoch=200
+  验证集指标:
+    Loss/val_spectrum: best=210.9375 @epoch=141, last=220.6671 @epoch=200
+    Loss/val_total: best=210.9375 @epoch=141, last=220.6671 @epoch=200
+  其他指标:
+    Loss/phy_penalty: last=0.0002 @epoch=200
+    Physics/alpha_avg: last=0.2780 @epoch=200
+
+──────────────────────────────────────────────────────────────────────
+  [V1.1]  pi_mbcn_hvac_20260506_183039_epochs200_bs8_lr0.001_dir_csvdata333
+──────────────────────────────────────────────────────────────────────
+  训练集最终指标:
+    Loss/train_total: 3253.5940 @epoch=200
+    Loss/train_mse_spec_loss: 198.7529 @epoch=200
+    Loss/train_cosine_spec_loss: 0.4047 @epoch=200
+    Loss/train_mse_oaspl: 148.6946 @epoch=200
+  验证集指标:
+    Loss/val_spectrum: best=230.1374 @epoch=179, last=236.7727 @epoch=200
+    Loss/val_total: best=230.1374 @epoch=179, last=236.7727 @epoch=200
+
+──────────────────────────────────────────────────────────────────────
+  [V1.1.1.1]  pi_mbcn_hvac_20260509_200108_epochs300_bs4_lr0.0005_dir_csvdata333
+──────────────────────────────────────────────────────────────────────
+  训练集最终指标:
+    Loss/train_total: 2623.6575 @epoch=300
+    Loss/train_mse_spec_loss: 191.0904 @epoch=300
+    Loss/train_cosine_spec_loss: 0.4202 @epoch=300
+    Loss/train_mse_oaspl: 117.4262 @epoch=300
+  验证集指标:
+    Loss/val_spectrum: best=219.3955 @epoch=280, last=224.1905 @epoch=300
+    Loss/val_total: best=219.3955 @epoch=280, last=224.1905 @epoch=300
+
+──────────────────────────────────────────────────────────────────────
+  [V1.1.1.1.1 (300ep)]  pi_mbcn_hvac_MTL_20260511_123415_epochs300_bs16_lr0.0005
+──────────────────────────────────────────────────────────────────────
+  训练集最终指标:
+    Loss/train_total: 342.5836 @epoch=300
+    Loss/train_mse_spec_loss: 147.1424 @epoch=300
+    Loss/train_cosine_spec_loss: 0.0916 @epoch=300
+    Loss/train_mse_oaspl: 177.1161 @epoch=300
+  验证集指标:
+    Loss/val_spectrum: best=164.7583 @epoch=294, last=164.7704 @epoch=300
+    Loss/val_total: best=164.7583 @epoch=294, last=164.7704 @epoch=300
+  其他指标:
+    Learning_Rate/shared_trunk: last=0.0000 @epoch=300
+    Learning_Rate/task_heads: last=0.0001 @epoch=300
+
+──────────────────────────────────────────────────────────────────────
+  [V1.1.1.1.1 (1500ep)]  pi_mbcn_hvac_MTL_20260511_211708_epochs1500_bs16_lr0.0005
+──────────────────────────────────────────────────────────────────────
+  训练集最终指标:
+    Loss/train_total: 201.8135 @epoch=1500
+    Loss/train_mse_spec_loss: 79.0287 @epoch=1500
+    Loss/train_cosine_spec_loss: 0.0658 @epoch=1500
+    Loss/train_mse_oaspl: 109.6194 @epoch=1500
+  验证集指标:
+    Loss/val_spectrum: best=91.3933 @epoch=1491, last=91.4796 @epoch=1500
+    Loss/val_total: best=91.3933 @epoch=1491, last=91.4796 @epoch=1500
+  其他指标:
+    Learning_Rate/shared_trunk: last=0.0000 @epoch=1500
+    Learning_Rate/task_heads: last=0.0000 @epoch=1500
+
+──────────────────────────────────────────────────────────────────────
+  [V514]  pi_mbcn_hvac_MTL_20260514_160650_epochs7500_bs16_lr0.0005
+──────────────────────────────────────────────────────────────────────
+  训练集最终指标:
+    Loss/train_total: 8.6558 @epoch=3948
+    Loss/train_mse_spec_loss: 144.4661 @epoch=3948
+    Loss/train_cosine_spec_loss: 0.0091 @epoch=3948
+    Loss/train_mse_oaspl: 218.2756 @epoch=3948
+  验证集指标:
+    Loss/val_spectrum: best=166.2134 @epoch=3939, last=167.9859 @epoch=3948
+    Loss/val_total: best=166.2134 @epoch=3939, last=167.9859 @epoch=3948
+  其他指标:
+    Learning_Rate/shared_trunk: last=0.0004 @epoch=3948
+    Learning_Rate/task_heads: last=0.0004 @epoch=3948
+    Dynamic_Weights/MSE_Weight: last=0.0069 @epoch=3948
+    Dynamic_Weights/Cosine_Weight: last=114.6784 @epoch=3948
+    Dynamic_Weights/OASPL_Weight: last=0.0046 @epoch=3948
+
+──────────────────────────────────────────────────────────────────────
+  [V0521 (run2)]  pi_mbcn_hvac_MTL_20260521_220730_epochs7500_bs16_lr0.0005_opt0521
+──────────────────────────────────────────────────────────────────────
+  训练集最终指标:
+    Loss/train_total: 7.9324 @epoch=7500
+    Loss/train_mse_spec_loss: 115.8288 @epoch=7500
+    Loss/train_cosine_spec_loss: 0.0069 @epoch=7500
+    Loss/train_mse_oaspl: 173.9814 @epoch=7500
+  验证集指标:
+    Loss/val_spectrum: best=146.9162 @epoch=7458, last=147.6061 @epoch=7500
+    Loss/val_total: best=146.9162 @epoch=7458, last=147.6061 @epoch=7500
+  其他指标:
+    Learning_Rate/shared_trunk: last=0.0005 @epoch=7500
+    Learning_Rate/task_heads: last=0.0005 @epoch=7500
+    Dynamic_Weights/MSE_Weight: last=0.0086 @epoch=7500
+    Dynamic_Weights/Cosine_Weight: last=147.1607 @epoch=7500
+    Dynamic_Weights/OASPL_Weight: last=0.0057 @epoch=7500
+
+──────────────────────────────────────────────────────────────────────
+  [Early (04-28 run4)]  pi_mbcn_hvac_epochs100_bs16_lr0.001_dir_csvdata333
+──────────────────────────────────────────────────────────────────────
+  训练集最终指标:
+    Loss/train_total: 751815.9375 @epoch=2
+  验证集指标:
+    Loss/val_total: best=359.8589 @epoch=2, last=359.8589 @epoch=2
+    Loss/val_oaspl: best=2695.9160 @epoch=2, last=2695.9160 @epoch=2
+    Loss/val_octave: best=385.8763 @epoch=2, last=385.8763 @epoch=2
+    Loss/val_spectrum: best=333.8416 @epoch=2, last=333.8416 @epoch=2
+  其他指标:
+    Loss/phy_penalty: last=362877.6250 @epoch=2
+    Learning Rate: last=0.0010 @epoch=2
+
+
+================================================================================
+  各版本最佳Epoch汇总
+================================================================================
+
+[V0609 (wd=0.005)] best_epoch=2184 (via Loss/val_total=105.2185)
+  Loss/val_total: 105.2185
+  Loss/val_mse_spec: 12.5387
+  Loss/val_cosine_spec: 0.0276
+  Loss/val_mse_oaspl: 10.8324
+  Loss/val_grad: 0.6240
+
+[V0609 (wd=0.001)] best_epoch=609 (via Loss/val_total=85.3353)
+  Loss/val_total: 85.3353
+  Loss/val_mse_spec: 11.9248
+  Loss/val_cosine_spec: 0.0230
+  Loss/val_mse_oaspl: 9.8131
+  Loss/val_grad: 0.5431
+  Loss/val_logmse: 9.1276
+
+[V0529 (run1)] best_epoch=1292 (via Loss/val_spectrum=34.7218)
+  Loss/val_spectrum: 34.7218
+
+[V0529 (run2)] best_epoch=43946 (via Loss/val_spectrum=39.3513)
+  Loss/val_spectrum: 39.3513
+
+[V0601 (run1, hidden=512)] best_epoch=1291 (via Loss/val_spectrum=0.0447)
+  Loss/val_spectrum: 0.0447
+
+[V0601 (run2, hidden=512)] best_epoch=1919 (via Loss/val_spectrum=0.0000)
+  Loss/val_spectrum: 0.0000
+  Loss/val_mse_spec: 76.3004
+  Loss/val_cosine_spec: 0.1097
+  Loss/val_mse_oaspl: 49.2552
+  Loss/val_grad: 0.4308
+
+[V0601 (run3, hidden=256)] best_epoch=6008 (via Loss/val_spectrum=121.2105)
+  Loss/val_spectrum: 121.2105
+  Loss/val_mse_spec: 14.8140
+  Loss/val_cosine_spec: 0.0213
+  Loss/val_mse_oaspl: 9.8801
+  Loss/val_grad: 0.6740
+
+[V0602 (wd=0.01, run1)] best_epoch=305 (via Loss/val_spectrum=1798.2853)
+  Loss/val_spectrum: 1798.2853
+  Loss/val_mse_spec: 221.2401
+  Loss/val_cosine_spec: 0.4607
+  Loss/val_mse_oaspl: 21.2592
+  Loss/val_grad: 52.0593
+
+[V0602 (wd=0.01, run2)] best_epoch=368 (via Loss/val_spectrum=1340.3411)
+  Loss/val_spectrum: 1340.3411
+  Loss/val_mse_spec: 158.9459
+  Loss/val_cosine_spec: 0.3070
+  Loss/val_mse_oaspl: 29.0602
+  Loss/val_grad: 50.1338
+
+[V0602 (wd=0.0005)] best_epoch=42255 (via Loss/val_spectrum=240.3300)
+  Loss/val_spectrum: 240.3300
+  Loss/val_mse_spec: 29.7879
+  Loss/val_cosine_spec: 0.0454
+  Loss/val_mse_oaspl: 17.3074
+  Loss/val_grad: 1.0460
+
+[V0602 (wd=0.005)] best_epoch=26868 (via Loss/val_spectrum=231.2643)
+  Loss/val_spectrum: 231.2643
+  Loss/val_mse_spec: 28.1599
+  Loss/val_cosine_spec: 0.0492
+  Loss/val_mse_oaspl: 20.0475
+  Loss/val_grad: 1.1271
+
+[V0608 (中间实验)] best_epoch=6063 (via Loss/val_total=83.4401)
+  Loss/val_total: 83.4401
+  Loss/val_mse_spec: 10.0448
+  Loss/val_cosine_spec: 0.0185
+  Loss/val_mse_oaspl: 7.5340
+  Loss/val_grad: 0.6091
+
+[Early (04-28 run1)] best_epoch=14 (via Loss/val_total=168.7655)
+  Loss/val_total: 168.7655
+
+[Early (04-28 run2)] best_epoch=95 (via Loss/val_total=154.1701)
+  Loss/val_total: 154.1701
+
+[Early (04-28 run3)] best_epoch=183 (via Loss/val_total=152.3303)
+  Loss/val_oaspl: 5.5001
+  Loss/val_octave: 2.0239
+  Loss/val_spectrum: 302.6367
+  Loss/val_total: 152.3303
+
+[V1 (备选/早期)] best_epoch=20 (via Loss/val_total=132.2374)
+  Loss/val_oaspl: 21.1112
+  Loss/val_octave: 8.5315
+  Loss/val_spectrum: 255.9432
+  Loss/val_total: 132.2374
+
+[V1 (备选/早期)] best_epoch=171 (via Loss/val_total=117.4701)
+  Loss/val_oaspl: 6.5839
+  Loss/val_octave: 4.3995
+  Loss/val_spectrum: 230.5408
+  Loss/val_total: 117.4701
+
+[V1] best_epoch=143 (via Loss/val_total=110.7920)
+  Loss/val_oaspl: 9.4114
+  Loss/val_octave: 4.8514
+  Loss/val_spectrum: 216.7326
+  Loss/val_total: 110.7920
+
+[V1.1.1] best_epoch=141 (via Loss/val_total=210.9375)
+  Loss/val_spectrum: 210.9375
+  Loss/val_total: 210.9375
+
+[V1.1] best_epoch=179 (via Loss/val_total=230.1374)
+  Loss/val_spectrum: 230.1374
+  Loss/val_total: 230.1374
+
+[V1.1.1.1] best_epoch=280 (via Loss/val_total=219.3955)
+  Loss/val_spectrum: 219.3955
+  Loss/val_total: 219.3955
+
+[V1.1.1.1.1 (300ep)] best_epoch=294 (via Loss/val_total=164.7583)
+  Loss/val_spectrum: 164.7583
+  Loss/val_total: 164.7583
+
+[V1.1.1.1.1 (1500ep)] best_epoch=1491 (via Loss/val_total=91.3933)
+  Loss/val_spectrum: 91.3933
+  Loss/val_total: 91.3933
+
+[V514] best_epoch=3939 (via Loss/val_total=166.2134)
+  Loss/val_spectrum: 166.2134
+  Loss/val_total: 166.2134
+
+[V0521 (run2)] best_epoch=7458 (via Loss/val_total=146.9162)
+  Loss/val_spectrum: 146.9162
+  Loss/val_total: 146.9162
+
+[Early (04-28 run4)] best_epoch=2 (via Loss/val_total=359.8589)
+  Loss/val_total: 359.8589
+  Loss/val_oaspl: 2695.9160
+  Loss/val_octave: 385.8763
+  Loss/val_spectrum: 333.8416
