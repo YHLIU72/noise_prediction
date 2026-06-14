@@ -4,7 +4,7 @@
 *.xlsm
 *.xls
 *.docx
-
+*.txt
 # ===== 模型文件 =====
 *.pth
 *.ckpt
