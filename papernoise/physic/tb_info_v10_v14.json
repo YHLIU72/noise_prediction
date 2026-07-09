@@ -1,0 +1,277 @@
+{
+  "V10": {
+    "run_dir": "pi_mbcn_v10_20260614_195124",
+    "tags": [
+      "Loss/train_total",
+      "Loss/train_mse_db",
+      "Loss/train_grad",
+      "Loss/train_linear_peak",
+      "Loss/val_total",
+      "Loss/val_mse_db",
+      "Loss/val_grad",
+      "Loss/val_linear_peak"
+    ],
+    "val_tags": [
+      "Loss/val_total",
+      "Loss/val_mse_db",
+      "Loss/val_grad",
+      "Loss/val_linear_peak"
+    ],
+    "metrics": {
+      "Loss/val_total": {
+        "best": 12.417002,
+        "best_epoch": 2361,
+        "latest": 18.336143,
+        "latest_epoch": 7835,
+        "total": 7835
+      },
+      "Loss/val_mse_db": {
+        "best": 2.231724,
+        "best_epoch": 2361,
+        "latest": 3.412843,
+        "latest_epoch": 7835,
+        "total": 7835
+      },
+      "Loss/val_grad": {
+        "best": 0.414443,
+        "best_epoch": 1055,
+        "latest": 0.422554,
+        "latest_epoch": 7835,
+        "total": 7835
+      },
+      "Loss/val_linear_peak": {
+        "best": 0.001922,
+        "best_epoch": 2361,
+        "latest": 0.002132,
+        "latest_epoch": 7835,
+        "total": 7835
+      }
+    },
+    "ckpt_epoch": 2360,
+    "ckpt_best_val_loss": 12.417002
+  },
+  "V11": {
+    "run_dir": "pi_mbcn_v11_20260615_141627",
+    "tags": [
+      "Loss/train_total",
+      "Loss/train_mse_weighted",
+      "Loss/train_mse_raw",
+      "Loss/train_grad",
+      "Loss/train_linear_peak",
+      "Loss/val_total",
+      "Loss/val_mse_weighted",
+      "Loss/val_mse_raw",
+      "Loss/val_grad",
+      "Loss/val_linear_peak"
+    ],
+    "val_tags": [
+      "Loss/val_total",
+      "Loss/val_mse_weighted",
+      "Loss/val_mse_raw",
+      "Loss/val_grad",
+      "Loss/val_linear_peak"
+    ],
+    "metrics": {
+      "Loss/val_total": {
+        "best": 9.913238,
+        "best_epoch": 9566,
+        "latest": 10.603846,
+        "latest_epoch": 50000,
+        "total": 50000
+      },
+      "Loss/val_mse_weighted": {
+        "best": 1.675397,
+        "best_epoch": 9566,
+        "latest": 1.810363,
+        "latest_epoch": 50000,
+        "total": 50000
+      },
+      "Loss/val_mse_raw": {
+        "best": 1.515436,
+        "best_epoch": 9566,
+        "latest": 1.650818,
+        "latest_epoch": 50000,
+        "total": 50000
+      },
+      "Loss/val_grad": {
+        "best": 0.507673,
+        "best_epoch": 2363,
+        "latest": 0.515992,
+        "latest_epoch": 50000,
+        "total": 50000
+      },
+      "Loss/val_linear_peak": {
+        "best": 0.001772,
+        "best_epoch": 20313,
+        "latest": 0.002028,
+        "latest_epoch": 50000,
+        "total": 50000
+      }
+    },
+    "ckpt_epoch": 9565,
+    "ckpt_best_val_loss": 9.913238
+  },
+  "V12": {
+    "run_dir": "pi_mbcn_v12_20260615_141720",
+    "tags": [
+      "Loss/train_total",
+      "Loss/train_mse_db",
+      "Loss/train_grad",
+      "Loss/train_linear_peak",
+      "Loss/train_lowfreq",
+      "Loss/val_total",
+      "Loss/val_mse_db",
+      "Loss/val_grad",
+      "Loss/val_linear_peak",
+      "Loss/val_lowfreq"
+    ],
+    "val_tags": [
+      "Loss/val_total",
+      "Loss/val_mse_db",
+      "Loss/val_grad",
+      "Loss/val_linear_peak",
+      "Loss/val_lowfreq"
+    ],
+    "metrics": {
+      "Loss/val_total": {
+        "best": 19.680159,
+        "best_epoch": 1314,
+        "latest": 31.365845,
+        "latest_epoch": 50000,
+        "total": 50000
+      },
+      "Loss/val_mse_db": {
+        "best": 2.151539,
+        "best_epoch": 1334,
+        "latest": 4.153136,
+        "latest_epoch": 50000,
+        "total": 50000
+      },
+      "Loss/val_grad": {
+        "best": 0.50755,
+        "best_epoch": 3625,
+        "latest": 0.517431,
+        "latest_epoch": 50000,
+        "total": 50000
+      },
+      "Loss/val_linear_peak": {
+        "best": 0.001834,
+        "best_epoch": 1337,
+        "latest": 0.002722,
+        "latest_epoch": 50000,
+        "total": 50000
+      },
+      "Loss/val_lowfreq": {
+        "best": 3.686413,
+        "best_epoch": 1311,
+        "latest": 4.521214,
+        "latest_epoch": 50000,
+        "total": 50000
+      }
+    },
+    "ckpt_epoch": 1313,
+    "ckpt_best_val_loss": 19.680159
+  },
+  "V13": {
+    "run_dir": "pi_mbcn_v13_20260615_141745",
+    "tags": [
+      "Loss/train_total",
+      "Loss/train_mse_db",
+      "Loss/train_grad",
+      "Loss/train_linear_peak",
+      "Loss/val_total",
+      "Loss/val_mse_db",
+      "Loss/val_grad",
+      "Loss/val_linear_peak"
+    ],
+    "val_tags": [
+      "Loss/val_total",
+      "Loss/val_mse_db",
+      "Loss/val_grad",
+      "Loss/val_linear_peak"
+    ],
+    "metrics": {
+      "Loss/val_total": {
+        "best": 11.058277,
+        "best_epoch": 1326,
+        "latest": 14.175702,
+        "latest_epoch": 50000,
+        "total": 50000
+      },
+      "Loss/val_mse_db": {
+        "best": 2.071387,
+        "best_epoch": 1326,
+        "latest": 2.688914,
+        "latest_epoch": 50000,
+        "total": 50000
+      },
+      "Loss/val_grad": {
+        "best": 0.231357,
+        "best_epoch": 1802,
+        "latest": 0.241654,
+        "latest_epoch": 50000,
+        "total": 50000
+      },
+      "Loss/val_linear_peak": {
+        "best": 0.0023,
+        "best_epoch": 1344,
+        "latest": 0.003084,
+        "latest_epoch": 50000,
+        "total": 50000
+      }
+    },
+    "ckpt_epoch": 1325,
+    "ckpt_best_val_loss": 11.058277
+  },
+  "V14": {
+    "run_dir": "pi_mbcn_v14_20260615_141801",
+    "tags": [
+      "Loss/train_total",
+      "Loss/train_mse_db",
+      "Loss/train_grad",
+      "Loss/train_linear_peak",
+      "Loss/val_total",
+      "Loss/val_mse_db",
+      "Loss/val_grad",
+      "Loss/val_linear_peak"
+    ],
+    "val_tags": [
+      "Loss/val_total",
+      "Loss/val_mse_db",
+      "Loss/val_grad",
+      "Loss/val_linear_peak"
+    ],
+    "metrics": {
+      "Loss/val_total": {
+        "best": 12.865331,
+        "best_epoch": 5526,
+        "latest": 14.68748,
+        "latest_epoch": 50000,
+        "total": 50000
+      },
+      "Loss/val_mse_db": {
+        "best": 2.039442,
+        "best_epoch": 5526,
+        "latest": 2.341656,
+        "latest_epoch": 50000,
+        "total": 50000
+      },
+      "Loss/val_grad": {
+        "best": 0.413917,
+        "best_epoch": 3424,
+        "latest": 0.420792,
+        "latest_epoch": 50000,
+        "total": 50000
+      },
+      "Loss/val_linear_peak": {
+        "best": 0.00183,
+        "best_epoch": 11554,
+        "latest": 0.002118,
+        "latest_epoch": 50000,
+        "total": 50000
+      }
+    },
+    "ckpt_epoch": 5525,
+    "ckpt_best_val_loss": 12.865331
+  }
+}
