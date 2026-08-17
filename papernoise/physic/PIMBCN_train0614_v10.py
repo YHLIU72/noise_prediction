@@ -221,7 +221,9 @@ def train_model(resume_path=None):
             save_dict = {'model_state_dict': ema_model.state_dict(),
                          'optimizer_state_dict': optimizer.state_dict(),
                          'scheduler_state_dict': scheduler.state_dict(),
-                         'epoch': epoch, 'best_val_loss': best_val_loss}
+                         'epoch': epoch, 'best_val_loss': best_val_loss,
+                         'input_mean': torch.from_numpy(train_dataset.input_mean),
+                         'input_std': torch.from_numpy(train_dataset.input_std)}
             if scaler is not None: save_dict['scaler_state_dict'] = scaler.state_dict()
             torch.save(save_dict, os.path.join(save_dir, 'best_model.pth'))
 

@@ -71,7 +71,7 @@ class PIMBCNDataset(Dataset):
             self.input_std = self.norm_params['input_std']
 
     def _load_and_process_data(self):
-        csv_files = [f for f in os.listdir(self.directory_path) if f.endswith('.csv')]
+        csv_files = sorted([f for f in os.listdir(self.directory_path) if f.endswith('.csv')])
         if not csv_files:
             raise ValueError(f"目录 {self.directory_path} 中未找到CSV文件")
 

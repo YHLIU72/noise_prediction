@@ -236,6 +236,8 @@ def train_model():
                 'optimizer_state_dict': optimizer.state_dict(),
                 'scheduler_state_dict': scheduler.state_dict(),
                 'epoch': epoch, 'best_val_loss': best_val_loss,
+                'input_mean': torch.from_numpy(train_dataset.input_mean),
+                'input_std': torch.from_numpy(train_dataset.input_std),
             }
             if scaler is not None:
                 save_dict['scaler_state_dict'] = scaler.state_dict()

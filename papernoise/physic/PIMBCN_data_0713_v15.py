@@ -1,13 +1,24 @@
 """
-PIMBCN 数据集加载类（2026-06-14 V14 配套版: 方案3 — 修复V10增强）
+PIMBCN 数据集加载类（2026-07-13 V15: 混合频率采样 — 低频对数+高频线性）
 
-=== 基于 V10 数据管道，修复增强边界伪影 ===
-[V14] 修复: 频移从循环移位(np.roll)改为反射填充
-  - V10问题: np.roll把5000Hz低能值(~20dB)循环到60Hz边界 → 不真实频谱
-  - V14修复: 使用np.pad反射模式 + 裁剪, 保持边界连续性
-  - 其他增强保持与V10/V4一致
+=== 核心创新 ===
+[V15] 混合频率采样策略:
+  - 20~500Hz: 对数采样 (logspace, 450点) — 保留V13低频优势
+  - 500~5000Hz: 线性采样 (linspace, 796点) — 恢复V4中频密度
+  - 总频点数: 1246 (与V4/V13相同, 公平对比)
+  
+  动机: V13对数重采样在20-100Hz改善49%, 但300-800Hz恶化32%
+        → 混合策略: 低频保留对数密度, 中高频恢复线性密度
+        → 300-800Hz=125点(≈V4的126), 20-100Hz=225点(11×V4)
 
-[保留] V10频率范围: 60~5000Hz (1236点), 弱增强
+=== 相对 V4/V13 的变更 ===
+[V15] 混合频率轴:
+  freq_axis = concat(logspace(20,500,450), linspace(500,5000,797)[1:])
+  → 低频段(20-100Hz): 225点 (V4=21, V13=363)
+  → 中频段(300-800Hz): 125点 (V4=126, V13=221) ← 恢复V4密度!
+
+[保留] V4/V13 全部数据管道: 分层抽样、预解析numpy、弱增强、sorted CSV
+[保留] 代码质量修复: sorted CSV + 零填充 + 保存norm_params
 """
 import torch, pandas as pd, os, ast, numpy as np
 from torch.utils.data import Dataset
@@ -39,7 +50,18 @@ class PIMBCNDataset(Dataset):
         self.input_mean = None; self.input_std = None
         self.inputs_array = None; self.types_array = None; self.modes_array = None
         self.oaspl_array = None; self.octave_array = None; self.spectrum_array = None
-        self.freq_axis = np.linspace(60, 5000, 1236)  # 60~5000Hz, 1236点
+
+        # [V15] 混合频率轴: 20~500Hz对数 + 500~5000Hz线性
+        SPLIT_FREQ = 500
+        N_LOW = 450   # 对数采样点数 (20~500Hz)
+        N_HIGH = 797  # 线性采样点数 (500~5000Hz, 含首点=500)
+        freqs_low = np.logspace(np.log10(20), np.log10(SPLIT_FREQ), N_LOW)
+        freqs_high = np.linspace(SPLIT_FREQ, 5000, N_HIGH)[1:]  # 去掉重复的500Hz
+        self.freq_axis = np.concatenate([freqs_low, freqs_high])  # 1246点
+
+        # 原始线性频率轴 (4Hz间隔, 用于从原始频谱插值)
+        self._orig_linear_freqs = np.linspace(20, 5000, 1246)
+
         np.random.seed(random_seed)
         if not self.is_validation:
             self._load_and_process_data()
@@ -47,10 +69,14 @@ class PIMBCNDataset(Dataset):
             self._split_data()
             self._compute_normalization_params()
         else:
-            self.input_mean = self.norm_params['input_mean']
-            self.input_std = self.norm_params['input_std']
+            if self.norm_params is not None:
+                self.input_mean = self.norm_params['input_mean']
+                self.input_std = self.norm_params['input_std']
+            else:
+                raise ValueError("验证集需要传入 norm_params (包含 input_mean/input_std)")
 
     def _load_and_process_data(self):
+        # [修复] sorted() 确保确定性
         csv_files = sorted([f for f in os.listdir(self.directory_path) if f.endswith('.csv')])
         if not csv_files: raise ValueError(f"目录 {self.directory_path} 中未找到CSV文件")
         dfs = [pd.read_csv(os.path.join(self.directory_path, f)) for f in csv_files]
@@ -72,15 +98,35 @@ class PIMBCNDataset(Dataset):
         for val in self.data.iloc[:, self.octave_col]:
             octave_list.append(ast.literal_eval(val) if isinstance(val, str) else val)
         self.octave_array = np.array(octave_list, dtype=np.float32)
+
+        # [V15] 混合频率重采样
         spectrum_list = []
         for val in self.data.iloc[:, self.spectrum_col]:
             parsed = ast.literal_eval(val) if isinstance(val, str) else val
             if len(parsed) > 2501: parsed = parsed[:2501]
-            elif len(parsed) < 2501: parsed = parsed + [0.0] * (2501 - len(parsed))
-            spectrum_list.append(parsed[15:1251])  # 60~5000Hz (索引15=60Hz, 1250=5000Hz)
+            elif len(parsed) < 2501:
+                # [修复] 零填充, 与评估代码一致
+                parsed = parsed + [0.0] * (2501 - len(parsed))
+            # 从原始线性频谱 (4Hz间隔) 截取 20~5000Hz → 1246点
+            linear_spectrum = np.array(parsed[5:1251], dtype=np.float32)
+            # [V15] 混合插值: 从线性网格映射到混合频率轴
+            hybrid_spectrum = np.interp(self.freq_axis, self._orig_linear_freqs, linear_spectrum)
+            spectrum_list.append(hybrid_spectrum.astype(np.float32))
+
         self.spectrum_array = np.array(spectrum_list, dtype=np.float32)
+        # 统计各频段采样密度
+        low_count = np.sum(self.freq_axis < 100)
+        mid_count = np.sum((self.freq_axis >= 300) & (self.freq_axis < 800))
         print(f"预解析完成: inputs {self.inputs_array.shape}, "
-              f"spectrum {self.spectrum_array.shape} (60~5000Hz), octave {self.octave_array.shape}")
+              f"spectrum {self.spectrum_array.shape} (20~5000Hz, 混合采样)")
+        print(f"[V15] 混合频率采样: 低频对数(<500Hz) {np.sum(self.freq_axis<500)}点, "
+              f"高频线性(>=500Hz) {np.sum(self.freq_axis>=500)}点")
+        print(f"[V15] 频段密度: <100Hz={low_count}点, "
+              f"100-300Hz={np.sum((self.freq_axis>=100)&(self.freq_axis<300))}点, "
+              f"300-800Hz={mid_count}点(≈V4=126), "
+              f">800Hz={np.sum(self.freq_axis>=800)}点")
+        print(f"[V15] 对比: V4(线性) <100Hz=21, 300-800Hz=126 | "
+              f"V13(对数) <100Hz=363, 300-800Hz=221")
 
     def _validate_columns(self):
         max_col = len(self.column_names) - 1
@@ -133,32 +179,18 @@ class PIMBCNDataset(Dataset):
         return inputs + np.random.randn(*inputs.shape) * 0.02
 
     def _augment_spectrum(self, spectrum):
-        """
-        [V14修复] 频谱增强 — 频移从循环移位改为反射填充
-        V10的 np.roll 把高频低能值循环到60Hz边界, 产生物理不可能的频谱形状。
-        V14用 np.pad(reflect) 在边界处镜像填充, 保持频谱连续性。
-        """
+        """[V15] 频谱增强 — 混合域: 低频对数部分小心处理"""
         spectrum = spectrum.copy()
         scaled = spectrum / 10.0; max_v = np.max(scaled)
         target_oaspl = 10.0 * (np.log10(np.sum(np.power(10.0, scaled - max_v)) + 1e-10) + max_v)
         spectrum = spectrum + np.random.randn(len(spectrum)) * 0.8
         spectrum = spectrum * (1.0 + np.random.uniform(-0.08, 0.08))
-
-        # [V14修复] 频率偏移: 反射填充替代循环移位
-        shift = np.random.randint(-3, 4)
+        # [V15] 频移范围缩小: 避免低频对数区和高频线性区之间的失真
+        shift = np.random.randint(-1, 2)  # [-1, 0, 1], 保守频移
         if shift != 0:
-            n = len(spectrum)
-            pad_width = abs(shift)
-            # 使用反射模式填充边界, 保持物理连续性
-            if shift > 0:
-                # 左移: 在右侧反射填充, 然后从左侧裁剪
-                padded = np.pad(spectrum, (0, pad_width), mode='reflect')
-                spectrum = padded[shift:shift + n]
-            else:
-                # 右移: 在左侧反射填充, 然后从右侧裁剪
-                padded = np.pad(spectrum, (pad_width, 0), mode='reflect')
-                spectrum = padded[:n]
-
+            spectrum = np.roll(spectrum, shift)
+            if shift > 0: spectrum[:shift] = spectrum[shift]
+            else: spectrum[shift:] = spectrum[shift-1]
         if np.random.random() > 0.5:
             w = np.random.randint(3, 7); win = np.hanning(w); win = win / win.sum()
             spectrum = np.convolve(spectrum, win, mode='same')
@@ -189,12 +221,15 @@ class PIMBCNDataset(Dataset):
             directory_path=self.directory_path, input_cols=self.input_cols,
             oaspl_col=self.oaspl_col, octave_col=self.octave_col, spectrum_col=self.spectrum_col,
             type_col=self.type_col, mode_col=self.mode_col, val_split=self.val_split,
-            is_validation=True, norm_params={'input_mean': self.input_mean, 'input_std': self.input_std},
+            is_validation=True,
+            norm_params={'input_mean': self.input_mean, 'input_std': self.input_std},
             random_seed=self.random_seed, augment=False)
         val_dataset.type_encoder = self.type_encoder; val_dataset.mode_encoder = self.mode_encoder
         val_dataset.data = self.data; val_dataset.column_names = self.column_names
         val_dataset.inputs_array = self.inputs_array; val_dataset.types_array = self.types_array
         val_dataset.modes_array = self.modes_array; val_dataset.oaspl_array = self.oaspl_array
         val_dataset.octave_array = self.octave_array; val_dataset.spectrum_array = self.spectrum_array
-        val_dataset.val_indices = self.val_indices; val_dataset.indices = self.val_indices
+        val_dataset.val_indices = self.val_indices; val_dataset.train_indices = self.train_indices
+        val_dataset.indices = self.val_indices; val_dataset.freq_axis = self.freq_axis
+        val_dataset._orig_linear_freqs = self._orig_linear_freqs
         return val_dataset

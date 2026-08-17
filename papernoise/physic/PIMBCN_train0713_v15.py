@@ -1,13 +1,19 @@
 """
-PIMBCN 训练脚本（2026-06-12 V6: 折中正则化 — 平衡拟合与泛化）
+PIMBCN 训练脚本（2026-07-13 V15: 混合频率采样 — 低频对数+高频线性）
 
-=== 相对 V5 的变更 ===
-[修正] weight_decay: 5e-3→2e-3 (V4=1e-3, V5=5e-3过强, V6=2e-3 折中)
-[修正] 早停 patience: 500→1000 (给模型更充分的学习时间)
-[保留] V5训练策略: EMA+warmup+T_0=500+num_workers=2+梯度累积+混合精度+两阶段
-[保留] V5架构+损失权重 (已证实有效)
+=== 核心创新 ===
+[V15] 混合频率重采样:
+  - 20~500Hz: 对数采样 (450点) — 保留V13低频优势
+  - 500~5000Hz: 线性采样 (796点) — 恢复V4中频精度(300-800Hz=125点≈V4)
+  - 总频点数: 1246 (与V4/V13相同, 公平对比)
+  - 模型结构与 V4 完全一致, 仅数据端变化
 
-超参数: lr=3e-4, wd=2e-3, batch=8, accum=2(等效16), epochs=50000
+=== 训练策略（继承V13, 全部保留）===
+[架构] 1共享Head, EMA+warmup+T_0=150+梯度累积
+[增强] 弱增强 (噪声0.02/频谱0.8dB/频移[-1,2] 混合域保守)
+[修复] sorted CSV + 零填充 + 保存input_mean/input_std到checkpoint
+
+超参数: lr=3e-4, wd=1e-3, batch=8, accum=2(等效16), epochs=50000
 """
 import os
 os.environ['KMP_DUPLICATE_LIB_OK'] = 'TRUE'
@@ -18,11 +24,11 @@ import torch.optim as optim
 from torch.utils.tensorboard import SummaryWriter
 from tqdm import tqdm
 
-from PIMBCN_net0612_v6 import PI_MBCN, PhysicsLossWrapper
-from PIMBCN_data_0612_v6 import PIMBCNDataset
+from PIMBCN_net0713_v15 import PI_MBCN, PhysicsLossWrapper
+from PIMBCN_data_0713_v15 import PIMBCNDataset
 
 
-def train_model(resume_path=None, stage2_from=None):
+def train_model(resume_path=None):
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print(f"训练设备: {device}")
     torch.backends.cudnn.benchmark = True
@@ -33,11 +39,8 @@ def train_model(resume_path=None, stage2_from=None):
     epochs = 50000
     head_learning_rate = 3e-4
     shared_learning_rate = 3e-4
-    freq_bins = 1246
-    weight_decay_val = 2e-3                                          # [V6] V5=5e-3→2e-3 折中
-
-    if stage2_from is not None and os.path.exists(stage2_from):
-        print(f"\n=== Stage2 全模型微调, 加载Stage1权重: {stage2_from} ===")
+    freq_bins = 1246          # 20~5000Hz, 混合采样 1246 点 (450对数+796线性)
+    weight_decay_val = 1e-3
 
     # ===================== 断点续训 =====================
     start_epoch = 0; best_val_loss = float('inf'); scaler_state_dict = None
@@ -52,11 +55,11 @@ def train_model(resume_path=None, stage2_from=None):
         scaler_state_dict = checkpoint.get('scaler_state_dict', None)
     else:
         timestamp = time.strftime("%Y%m%d_%H%M%S")
-        run_name = f'pi_mbcn_v6_{timestamp}'
+        run_name = f'pi_mbcn_v15_{timestamp}'
         save_dir = f'runs/{run_name}/models'
         os.makedirs(save_dir, exist_ok=True)
         writer = SummaryWriter(f'runs/{run_name}')
-        print(f"从头训练 (V6: 折中正则化), 时间戳: {timestamp}")
+        print(f"从头训练 (V15: 混合频率采样, 20~5000Hz), 时间戳: {timestamp}")
 
     # ===================== 数据集 =====================
     data_directory = "F:\\lyh\\paddlespeech\\csvdata333"
@@ -70,7 +73,10 @@ def train_model(resume_path=None, stage2_from=None):
     val_loader = DataLoader(val_dataset, batch_size=batch_size, shuffle=False,
                             pin_memory=True, num_workers=2, persistent_workers=True)
     print(f"训练样本: {len(train_dataset)}, 验证样本: {len(val_dataset)}")
+    print(f"频率范围: 20~5000Hz (混合采样: 20-500Hz对数450点 + 500-5000Hz线性796点)")
     print(f"梯度累积: {accum_steps}步, 等效batch={batch_size * accum_steps}")
+    print(f"[V15] 混合频率采样: 低频对数保留V13优势(<100Hz=225点), "
+          f"中频线性恢复V4密度(300-800Hz=125点≈V4=126)")
 
     # ===================== 模型 + EMA =====================
     model = PI_MBCN(num_modes=4, num_types=13, freq_bins=freq_bins).to(device)
@@ -79,13 +85,8 @@ def train_model(resume_path=None, stage2_from=None):
     ema_model.eval()
     for p in ema_model.parameters(): p.requires_grad_(False)
     ema_decay = 0.999
-    print(f"损失权重 (V5重校准): MSE={loss_wrapper.weight_mse}, "
+    print(f"损失权重: MSE(多分辨率)={loss_wrapper.weight_mse}, "
           f"LinearPeak={loss_wrapper.weight_linear}, Sobolev={loss_wrapper.weight_grad}")
-
-    if stage2_from is not None and os.path.exists(stage2_from):
-        checkpoint = torch.load(stage2_from, map_location=device)
-        model.load_state_dict(checkpoint['model_state_dict'])
-        print("Stage1权重加载完毕, 进入Stage2全参数训练")
 
     # ===================== 优化器 + 调度器 =====================
     param_groups = [
@@ -96,7 +97,7 @@ def train_model(resume_path=None, stage2_from=None):
         {'params': model.shared_head.parameters(), 'lr': head_learning_rate},
     ]
     optimizer = optim.AdamW(param_groups, weight_decay=weight_decay_val)
-    scheduler = optim.lr_scheduler.CosineAnnealingWarmRestarts(optimizer, T_0=500, T_mult=2, eta_min=1e-7)
+    scheduler = optim.lr_scheduler.CosineAnnealingWarmRestarts(optimizer, T_0=150, T_mult=2, eta_min=1e-7)
 
     # ===================== LR warmup =====================
     warmup_epochs = 5; warmup_steps = warmup_epochs * len(train_loader)
@@ -106,17 +107,13 @@ def train_model(resume_path=None, stage2_from=None):
     scaler = torch.amp.GradScaler('cuda') if device.type == 'cuda' else None
     amp_enabled = scaler is not None
     if resume_path is not None and os.path.exists(resume_path):
+        checkpoint = torch.load(resume_path, map_location=device)
         model.load_state_dict(checkpoint['model_state_dict'])
         optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
         scheduler.load_state_dict(checkpoint['scheduler_state_dict'])
         if scaler is not None and scaler_state_dict is not None:
             scaler.load_state_dict(scaler_state_dict)
     print("已关闭动态图编译。")
-
-    # ===================== 早停机制 =====================
-    early_stop_patience = 1000                                      # [V6] V5=500→1000
-    early_stop_counter = 0
-    best_epoch = start_epoch
 
     # ===================== 损失累加器 =====================
     epoch_train_loss = torch.zeros(1, device=device)
@@ -221,11 +218,12 @@ def train_model(resume_path=None, stage2_from=None):
         writer.add_scalar('Loss/val_grad', avg_val_grad, epoch + 1)
         writer.add_scalar('Loss/val_linear_peak', avg_val_linear, epoch + 1)
 
-        # ---- 早停检查 ----
+        if (epoch + 1) % 10 == 0:
+            epoch_bar.set_postfix({'Train': f'{avg_train:.4f}', 'dB-MSE': f'{avg_train_mse:.4f}', 'Val': f'{avg_val:.4f}'})
+
+        # ---- 保存最佳模型 (含归一化参数) ----
         if avg_val < best_val_loss:
             best_val_loss = avg_val
-            best_epoch = epoch
-            early_stop_counter = 0
             save_dict = {'model_state_dict': ema_model.state_dict(),
                          'optimizer_state_dict': optimizer.state_dict(),
                          'scheduler_state_dict': scheduler.state_dict(),
@@ -234,25 +232,11 @@ def train_model(resume_path=None, stage2_from=None):
                          'input_std': torch.from_numpy(train_dataset.input_std)}
             if scaler is not None: save_dict['scaler_state_dict'] = scaler.state_dict()
             torch.save(save_dict, os.path.join(save_dir, 'best_model.pth'))
-        else:
-            early_stop_counter += 1
 
-        if (epoch + 1) % 10 == 0:
-            epoch_bar.set_postfix({'Train': f'{avg_train:.4f}', 'dB-MSE': f'{avg_train_mse:.4f}',
-                                   'Val': f'{avg_val:.4f}', 'Patience': f'{early_stop_counter}/{early_stop_patience}'})
-
-        if early_stop_counter >= early_stop_patience:
-            print(f"\n早停触发! {early_stop_patience}个epoch未改善. 最佳epoch: {best_epoch+1}, "
-                  f"最佳Val Loss: {best_val_loss:.4f}")
-            break
-
-    print(f"模型训练完成! 最佳Val Loss={best_val_loss:.4f} @ epoch {best_epoch+1}")
-    writer.close()
+    print("模型训练完成！"); writer.close()
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description='PI-MBCN V6 训练脚本')
-    parser.add_argument('--resume', type=str, default=None, help='断点续训检查点路径')
-    parser.add_argument('--stage2_from', type=str, default=None, help='Stage1模型路径, 启动Stage2全模型微调')
-    args = parser.parse_args()
-    train_model(resume_path=args.resume, stage2_from=args.stage2_from)
+    parser = argparse.ArgumentParser(description='PI-MBCN V15 训练脚本 (混合频率采样)')
+    parser.add_argument('--resume', type=str, default=None)
+    train_model(resume_path=parser.parse_args().resume)

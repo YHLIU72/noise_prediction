@@ -25,7 +25,7 @@ print(f"Device: {device}")
 # 统一数据集（所有版本共用同一个数据划分）
 # ============================================================
 class UnifiedDataset(Dataset):
-    def __init__(self, directory_path, is_train=True, val_split=0.2, seed=42):
+    def __init__(self, directory_path, is_train=True, val_split=0.2, seed=42, norm_params=None):
         csv_files = sorted([f for f in os.listdir(directory_path) if f.endswith('.csv')])
         dfs = [pd.read_csv(os.path.join(directory_path, f)) for f in csv_files]
         self.data = pd.concat(dfs, ignore_index=True)
@@ -42,7 +42,8 @@ class UnifiedDataset(Dataset):
             parsed = ast.literal_eval(val) if isinstance(val, str) else val
             arr = np.array(parsed, dtype=np.float32)
             if len(arr) >= 2501: arr = arr[:2501]
-            else: arr = np.pad(arr, (0, 2501-len(arr)), 'edge')
+            # [修复] 零填充, 与训练代码保持一致
+            else: arr = np.array(list(arr) + [0.0] * (2501 - len(arr)), dtype=np.float32)
             spectra.append(arr[5:1251])
         self.spectra = np.array(spectra, dtype=np.float32)
         self.freq_axis = np.linspace(20, 5000, 1246)
@@ -75,9 +76,15 @@ class UnifiedDataset(Dataset):
         train_indices = np.array(train_idx_list, dtype=np.int64)
         self.indices = train_indices if is_train else val_indices
         print(f"Stratified split: {len(unique_combos)} conditions, Train={len(train_indices)}, Val={len(val_indices)} ({len(val_indices)/self.n_total:.1%})")
-        # [fix] Always use TRAINING statistics for normalization (models trained with these)
-        self.input_mean = self.inputs[train_indices].mean(axis=0)
-        self.input_std = self.inputs[train_indices].std(axis=0) + 1e-8
+        # [fix] 优先使用外部传入的归一化参数，否则从训练集计算
+        if norm_params is not None:
+            self.input_mean = norm_params['input_mean']
+            self.input_std = norm_params['input_std']
+            print(f"  [归一化] 使用外部传入的 norm_params (来自训练checkpoint)")
+        else:
+            self.input_mean = self.inputs[train_indices].mean(axis=0)
+            self.input_std = self.inputs[train_indices].std(axis=0) + 1e-8
+            print(f"  [归一化] 从当前训练集重新计算 (无外部norm_params)")
     def __len__(self): return len(self.indices)
     def __getitem__(self, idx):
         i = self.indices[idx]
@@ -86,6 +93,21 @@ class UnifiedDataset(Dataset):
                 torch.tensor(self.modes[i], dtype=torch.long), i, torch.from_numpy(self.spectra[i]).float())
 
 data_dir = r"F:\lyh\paddlespeech\csvdata333"
+
+# [修复] 辅助函数：尝试从checkpoint加载归一化参数
+def _try_load_norm_params(ckpt_path):
+    if not os.path.exists(ckpt_path):
+        return None
+    try:
+        ckpt = torch.load(ckpt_path, map_location='cpu')
+        if 'input_mean' in ckpt and 'input_std' in ckpt:
+            mean = ckpt['input_mean'].numpy() if isinstance(ckpt['input_mean'], torch.Tensor) else ckpt['input_mean']
+            std = ckpt['input_std'].numpy() if isinstance(ckpt['input_std'], torch.Tensor) else ckpt['input_std']
+            return {'input_mean': mean, 'input_std': std}
+    except Exception:
+        pass
+    return None
+
 train_ds = UnifiedDataset(data_dir, is_train=True)
 val_ds = UnifiedDataset(data_dir, is_train=False)
 freq = val_ds.freq_axis

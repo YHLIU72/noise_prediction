@@ -8,6 +8,11 @@ v10-v14 模型综合评估脚本
 import os, sys, json, time, warnings, glob
 os.environ['KMP_DUPLICATE_LIB_OK'] = 'TRUE'
 os.environ['OMP_NUM_THREADS'] = '1'
+# [修复] Windows GBK编码兼容：强制UTF-8输出
+if sys.stdout.encoding != 'utf-8':
+    sys.stdout.reconfigure(encoding='utf-8', errors='replace')
+if sys.stderr.encoding != 'utf-8':
+    sys.stderr.reconfigure(encoding='utf-8', errors='replace')
 warnings.filterwarnings('ignore')
 
 import torch, numpy as np, pandas as pd, ast, importlib.util
@@ -99,9 +104,14 @@ print("构建统一验证集")
 print("="*60)
 
 class UnifiedDataset(Dataset):
-    """统一数据集: 加载原始CSV, 分层抽样划分train/val"""
+    """统一数据集: 加载原始CSV, 分层抽样划分train/val
+    
+    [V13修复] 可通过 norm_params 传入训练时的归一化参数,
+    避免因 CSV 加载顺序不同导致评估与训练不一致。
+    """
     def __init__(self, directory_path, is_train=True, val_split=0.2, seed=42,
-                 freq_range='20-5000', log_sample=False):
+                 freq_range='20-5000', log_sample=False, norm_params=None):
+        # [修复] 使用 sorted() 确保 CSV 加载顺序确定性, 与训练代码保持一致
         csv_files = sorted([f for f in os.listdir(directory_path) if f.endswith('.csv')])
         dfs = [pd.read_csv(os.path.join(directory_path, f)) for f in csv_files]
         self.data = pd.concat(dfs, ignore_index=True)
@@ -120,7 +130,8 @@ class UnifiedDataset(Dataset):
             parsed = ast.literal_eval(val) if isinstance(val, str) else val
             arr = np.array(parsed, dtype=np.float32)
             if len(arr) >= 2501: arr = arr[:2501]
-            else: arr = np.pad(arr, (0, 2501-len(arr)), 'edge')
+            # [修复] 零填充, 与训练代码 PIMBCN_data_0614_v13.py 保持一致
+            else: arr = np.array(list(arr) + [0.0] * (2501 - len(arr)), dtype=np.float32)
             spectra_raw.append(arr)
         spectra_raw = np.array(spectra_raw, dtype=np.float32)
         
@@ -177,9 +188,15 @@ class UnifiedDataset(Dataset):
         train_indices = np.array(train_idx_list, dtype=np.int64)
         self.indices = train_indices if is_train else val_indices
         
-        # 归一化 (使用训练集统计量)
-        self.input_mean = self.inputs[train_indices].mean(axis=0)
-        self.input_std = self.inputs[train_indices].std(axis=0) + 1e-8
+        # 归一化（优先使用外部传入的归一化参数，否则从训练集统计量计算）
+        if norm_params is not None:
+            self.input_mean = norm_params['input_mean']
+            self.input_std = norm_params['input_std']
+            print(f"  [归一化] 使用外部传入的 norm_params (来自训练checkpoint)")
+        else:
+            self.input_mean = self.inputs[train_indices].mean(axis=0)
+            self.input_std = self.inputs[train_indices].std(axis=0) + 1e-8
+            print(f"  [归一化] 从当前训练集重新计算 (无外部norm_params)")
         
         unique_combos_val = np.unique(combo_labels[val_indices])
         print(f"  {freq_range}{' (对数)' if log_sample else ''}: "
@@ -199,10 +216,40 @@ class UnifiedDataset(Dataset):
 
 data_dir = r"F:\lyh\paddlespeech\csvdata333"
 
-# 构建多个验证集以适配不同模型
-val_ds_20_5000 = UnifiedDataset(data_dir, is_train=False, freq_range='20-5000')
-val_ds_60_5000 = UnifiedDataset(data_dir, is_train=False, freq_range='60-5000')
-val_ds_log = UnifiedDataset(data_dir, is_train=False, freq_range='20-5000', log_sample=True)
+# [修复] 尝试从各版本 checkpoint 加载训练时使用的归一化参数
+# 所有版本使用相同数据和划分, norm_params 应一致, 任意一个版本的即可
+def _try_load_norm_params(ckpt_path):
+    if not os.path.exists(ckpt_path):
+        return None
+    try:
+        ckpt = torch.load(ckpt_path, map_location='cpu')
+        if 'input_mean' in ckpt and 'input_std' in ckpt:
+            mean = ckpt['input_mean'].numpy() if isinstance(ckpt['input_mean'], torch.Tensor) else ckpt['input_mean']
+            std = ckpt['input_std'].numpy() if isinstance(ckpt['input_std'], torch.Tensor) else ckpt['input_std']
+            return {'input_mean': mean, 'input_std': std}
+    except Exception:
+        pass
+    return None
+
+_shared_norm_params = None
+# 按优先级尝试各版本 checkpoint
+for _vname, _run_dir in VERSIONS_TB.items():
+    _ckpt_path = os.path.join(runs_base, _run_dir, "models", "best_model.pth")
+    _shared_norm_params = _try_load_norm_params(_ckpt_path)
+    if _shared_norm_params is not None:
+        print(f"[修复] 从 {_vname} checkpoint 加载到训练归一化参数: "
+              f"mean={_shared_norm_params['input_mean']}, std={_shared_norm_params['input_std']}")
+        break
+if _shared_norm_params is None:
+    print("[修复] WARNING: 所有checkpoint均无归一化参数(旧版), 将从数据重新计算")
+
+# 构建多个验证集以适配不同模型（传入训练时的归一化参数）
+val_ds_20_5000 = UnifiedDataset(data_dir, is_train=False, freq_range='20-5000',
+                                 norm_params=_shared_norm_params)
+val_ds_60_5000 = UnifiedDataset(data_dir, is_train=False, freq_range='60-5000',
+                                 norm_params=_shared_norm_params)
+val_ds_log = UnifiedDataset(data_dir, is_train=False, freq_range='20-5000', log_sample=True,
+                             norm_params=_shared_norm_params)
 
 # 验证三层数据集是否共享同一套样本
 assert np.array_equal(val_ds_20_5000.indices, val_ds_60_5000.indices), "验证集索引不一致!"

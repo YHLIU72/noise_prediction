@@ -56,7 +56,8 @@ class PIMBCNDataset(Dataset):
             self.input_std = self.norm_params['input_std']
 
     def _load_and_process_data(self):
-        csv_files = [f for f in os.listdir(self.directory_path) if f.endswith('.csv')]
+        # [修复] 使用 sorted() 确保 CSV 加载顺序确定性, 与评估代码保持一致
+        csv_files = sorted([f for f in os.listdir(self.directory_path) if f.endswith('.csv')])
         if not csv_files: raise ValueError(f"目录 {self.directory_path} 中未找到CSV文件")
         dfs = [pd.read_csv(os.path.join(self.directory_path, f)) for f in csv_files]
         self.data = pd.concat(dfs, ignore_index=True)
